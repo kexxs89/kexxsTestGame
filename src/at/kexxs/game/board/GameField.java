@@ -1,15 +1,22 @@
 package at.kexxs.game.board;
 
 import java.awt.Color;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.DragGestureEvent;
+import java.awt.dnd.DragGestureListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
+import java.util.logging.Logger;
 
 import javax.swing.JPanel;
 
 import at.kexxs.game.Game;
 import at.kexxs.game.unit.Unit;
 
-public class GameField extends JPanel implements MouseListener {
+public class GameField extends JPanel implements MouseListener, DragGestureListener, Transferable {
 
   /**
    * @author Markus
@@ -20,6 +27,8 @@ public class GameField extends JPanel implements MouseListener {
   private Unit unit;
   private Color background;
   private final Board board;
+
+  private static final Logger log = Logger.getLogger(GameField.class.getName());
 
   public GameField(Board board) {
     addMouseListener(this);
@@ -91,7 +100,6 @@ public class GameField extends JPanel implements MouseListener {
 
   @Override
   public void mouseReleased(MouseEvent e) {
-    setBackground(background);
 
   }
 
@@ -123,10 +131,13 @@ public class GameField extends JPanel implements MouseListener {
     if (board.getGame().getAcitvePlayer().getId() == unit.getPlayer().getId()) {
       return true;
     }
+    log.info("Diese Einheit gehört " + unit.getPlayer().getName());
     return false;
+
   }
 
   public void removeUnit() {
+    log.info("Einheit wurde vom Feld entfernt " + unit.getName() + " " + unit.getGameField().getName());
     removeAll();
     setUnit(null);
     repaint();
@@ -155,6 +166,30 @@ public class GameField extends JPanel implements MouseListener {
     } else {
       Game.setText("Dieser Zug ist nicht erlaubt!");
     }
+  }
+
+  @Override
+  public DataFlavor[] getTransferDataFlavors() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public boolean isDataFlavorSupported(DataFlavor flavor) {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public void dragGestureRecognized(DragGestureEvent dge) {
+    // TODO Auto-generated method stub
+
   }
 
 }

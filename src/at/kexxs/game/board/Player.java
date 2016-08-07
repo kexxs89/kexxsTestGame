@@ -2,6 +2,7 @@ package at.kexxs.game.board;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import at.kexxs.game.unit.Unit;
 
@@ -13,10 +14,14 @@ public class Player {
   List<Unit> units;
 
   public Player(int id, String name, boolean active) {
+
+    final Logger log = Logger.getLogger(Player.class.getName());
+
     this.id = id;
     this.name = name;
     this.active = active;
     units = new ArrayList<>();
+    log.info("Neuer Spieler wurde erstellt: " + name);
   }
 
   public int getId() {

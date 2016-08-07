@@ -2,6 +2,7 @@ package at.kexxs.game.board;
 
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.util.logging.Logger;
 
 import javax.swing.JPanel;
 
@@ -16,6 +17,8 @@ public class Board extends JPanel {
   private final Game game;
   private GameField[][] fields;
   public Unit selectedUnit;
+
+  private static final Logger log = Logger.getLogger(Board.class.getName());
 
   /** Creates a new instance of ChessBoard */
   public Board(Game game) {
@@ -64,8 +67,6 @@ public class Board extends JPanel {
         add(fields[row][column]);
       }
     }
-    fields[4][9].setBackground(Color.YELLOW);
-    fields[4][9].repaint();
   }
 
   public void setUnit(Unit unit, int row, int column) {
@@ -88,11 +89,10 @@ public class Board extends JPanel {
         fields[row][column].repaint();
       }
     }
-    fields[4][9].setBackground(Color.YELLOW);
-    fields[4][9].repaint();
   }
 
   public void restart() {
+    log.info("Neues Spiel startet");
     removeAll();
     init();
     validate();
@@ -130,8 +130,8 @@ public class Board extends JPanel {
 
   }
 
-  public GameField getField(int posX, int posY) {
-    return fields[posX][posY];
+  public GameField getField(int posY, int posX) {
+    return fields[posY][posX];
   }
 
   public void fillBoardWithUnits(Player player1, Player player2) {
@@ -141,42 +141,10 @@ public class Board extends JPanel {
 
   public void nextPlayer() {
 
-    if (getField(4, 9).getUnit() != null && getField(4, 9).getUnit().getPlayer().getId() == 1) {
-      Game.setText("Glückwunsch du hast gewonnen!");
-    } else {
-      final Player activePlayer = game.changeActivePlayer();
-      Game.setText(activePlayer.getName() + " ist an der Reihe!");
-      if (activePlayer.getId() == 2) {
-        final GameField gameFieldKi = findUnitOfPlayer(2);
-        final GameField gameFieldPlayer = findUnitOfPlayer(1);
-        final int differenceX = gameFieldKi.getPosY() - gameFieldPlayer.getPosY();
-        final int differenceY = gameFieldKi.getPosX() - gameFieldPlayer.getPosX();
-        final GameField newField;
-        if (Math.abs(differenceX) > Math.abs(differenceY)) {
-          int newX = 0;
-          if (differenceX > 0) {
-            newX = gameFieldKi.getPosY() - 1;
-          } else {
-            newX = gameFieldKi.getPosY() + 1;
-          }
-          newField = getField(newX, gameFieldKi.getPosX());
-        } else {
-          int newY = 0;
-          if (differenceY > 0) {
-            newY = gameFieldKi.getPosX() - 1;
-          } else {
-            newY = gameFieldKi.getPosX() + 1;
-          }
-          newField = getField(gameFieldKi.getPosY(), newY);
-        }
-        gameFieldKi.getUnit().setGameField(gameFieldKi);
-        gameFieldKi.getUnit().move(newField);
-
-        nextPlayer();
-
-      }
-      validate();
-    }
+    final Player activePlayer = game.changeActivePlayer();
+    log.info(activePlayer.getName() + " ist an der Reihe!");
+    Game.setText(activePlayer.getName() + " ist an der Reihe!");
+    validate();
 
   }
 
@@ -191,6 +159,7 @@ public class Board extends JPanel {
         }
       }
     }
+    log.info("No Units found");
     return null;
   }
 

@@ -1,5 +1,7 @@
 package at.kexxs.game.unit;
 
+import java.util.logging.Logger;
+
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
@@ -20,6 +22,8 @@ public class Unit extends JLabel {
   private String name = "unit";
   private GameField gameField;
   private final Player player;
+
+  private static final Logger log = Logger.getLogger(Unit.class.getName());
 
   public Unit(Player player) {
     this.player = player;
@@ -98,6 +102,11 @@ public class Unit extends JLabel {
     final int newX = newField.getPosY();
     final int newY = newField.getPosX();
 
+    // check if unit is on this field
+    if (newField.getUnit() != null) {
+      return false;
+    }
+
     if (oldX == newX) {
       final int difference = Math.abs(oldY - newY);
       if (difference <= movement) {
@@ -121,10 +130,13 @@ public class Unit extends JLabel {
 
   public boolean move(GameField newGameField) {
     if (!checkIfMovementIsValid(newGameField)) {
+      gameField.getBoard().setSelectedUnit(null);
+      log.info(getName() + "ist nicht erlaubt sich auf das Feld zu bewegen " + newGameField.getName());
       return false;
     }
     gameField.getBoard().removeUnit(getGameField().getPosY(), getGameField().getPosX());
     gameField.getBoard().setUnit(this, newGameField.getPosY(), newGameField.getPosX());
+    log.info(getName() + "befindet sich jetzt auf dem Feld " + newGameField.getName());
     return true;
   }
 

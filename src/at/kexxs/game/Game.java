@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -17,6 +18,8 @@ import at.kexxs.game.board.Player;
  */
 public class Game extends JFrame {
 
+  private static final Logger log = Logger.getLogger(Game.class.getName());
+
   private static final long serialVersionUID = 1L;
   Board board;
   Container gameContainer;
@@ -27,9 +30,6 @@ public class Game extends JFrame {
   Player player2;
 
   public Game() {
-
-    player1 = new Player(1, "Roter Spieler", true);
-    player2 = new Player(2, "Blauer Spieler", false);
 
     initLayout();
   }
@@ -57,6 +57,8 @@ public class Game extends JFrame {
       @Override
       public void actionPerformed(ActionEvent e) {
         board.restart();
+        player1 = new Player(1, "Roter Spieler", true);
+        player2 = new Player(2, "Blauer Spieler", false);
         board.fillBoardWithUnits(player1, player2);
         setText(player1.getName() + " ist an der Reihe");
         validate();
