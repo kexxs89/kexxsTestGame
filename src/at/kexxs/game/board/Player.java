@@ -12,11 +12,9 @@ public class Player {
   String name;
   boolean active;
   List<Unit> units;
+  final Logger log = Logger.getLogger(Player.class.getName());
 
   public Player(int id, String name, boolean active) {
-
-    final Logger log = Logger.getLogger(Player.class.getName());
-
     this.id = id;
     this.name = name;
     this.active = active;
@@ -54,6 +52,23 @@ public class Player {
 
   public void setUnits(List<Unit> units) {
     this.units = units;
+  }
+
+  public boolean checkIfUnitsCanMove() {
+    for (final Unit unit : units) {
+      if (!unit.isHasMoved()) {
+        log.info(unit.getName() + " can still move!");
+        return true;
+      }
+    }
+    log.info("All Units have moved");
+    return false;
+  }
+
+  public void resestAllUnits() {
+    for (final Unit unit : units) {
+      unit.setHasMoved(false);
+    }
   }
 
 }

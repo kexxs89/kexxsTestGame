@@ -56,7 +56,7 @@ public class Board extends JPanel {
       for (int column = 0; column < Game.HEIGHT; column++) {
         fields[row][column] = new GameField(this);
         if ((row + column) % 2 == 0) {
-          fields[row][column].setBackground(Color.white, true);
+          fields[row][column].setBackground(Color.gray, true);
         } else {
           fields[row][column].setBackground(Color.black, true);
         }
@@ -82,7 +82,7 @@ public class Board extends JPanel {
     for (int row = 0; row < Game.WIDTH; row++) {
       for (int column = 0; column < Game.HEIGHT; column++) {
         if ((row + column) % 2 == 0) {
-          fields[row][column].setBackground(Color.white);
+          fields[row][column].setBackground(Color.gray);
         } else {
           fields[row][column].setBackground(Color.black);
         }
@@ -135,8 +135,14 @@ public class Board extends JPanel {
   }
 
   public void fillBoardWithUnits(Player player1, Player player2) {
-    fields[4][0].setAndPaintUnit(new Unit(player1));
-    fields[4][9].setAndPaintUnit(new Unit(player2));
+    for (int i = 0; i < 10; i++) {
+      fields[i][0].setAndPaintUnit(new Unit(player1));
+    }
+
+    for (int i = 0; i < 10; i++) {
+      fields[i][Game.WIDTH - 1].setAndPaintUnit(new Unit(player2));
+    }
+
   }
 
   public void nextPlayer() {

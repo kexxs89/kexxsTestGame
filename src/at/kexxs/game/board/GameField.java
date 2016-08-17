@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.dnd.DragGestureEvent;
-import java.awt.dnd.DragGestureListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
@@ -16,7 +14,7 @@ import javax.swing.JPanel;
 import at.kexxs.game.Game;
 import at.kexxs.game.unit.Unit;
 
-public class GameField extends JPanel implements MouseListener, DragGestureListener, Transferable {
+public class GameField extends JPanel implements MouseListener, Transferable {
 
   /**
    * @author Markus
@@ -25,7 +23,6 @@ public class GameField extends JPanel implements MouseListener, DragGestureListe
   private int posY;
   private int posX;
   private Unit unit;
-  private Color background;
   private final Board board;
 
   private static final Logger log = Logger.getLogger(GameField.class.getName());
@@ -76,7 +73,6 @@ public class GameField extends JPanel implements MouseListener, DragGestureListe
 
   public void setBackground(Color bg, boolean setDefault) {
     if (setDefault) {
-      background = bg;
     }
     super.setBackground(bg);
   };
@@ -137,7 +133,7 @@ public class GameField extends JPanel implements MouseListener, DragGestureListe
   }
 
   public void removeUnit() {
-    log.info("Einheit wurde vom Feld entfernt " + unit.getName() + " " + unit.getGameField().getName());
+    log.info("Unit was removed from field: " + getName());
     removeAll();
     setUnit(null);
     repaint();
@@ -149,20 +145,26 @@ public class GameField extends JPanel implements MouseListener, DragGestureListe
         Game.setText("Nicht deine Figure");
         return;
       }
+      if (unit.isHasMoved()) {
+        Game.setText("Unit already moved");
+        return;
+      }
       Game.setText("Folgende Figur wurde ausgewählt: " + unit.getName());
-      setBackground(Color.BLUE);
       board.checkAvailableFields(board.getField(posY, posX), unit);
       unit.setGameField(board.getField(posY, posX));
+      unit.select();
       board.setSelectedUnit(unit);
     } else {
-      Game.setText("Keine Figuar auf diesem Feld!");
+      Game.setText("Keine Figur auf diesem Feld!");
     }
   }
 
   public void moveUnit(Unit unit) {
     if (unit.move(this)) {
       board.setSelectedUnit(null);
-      board.nextPlayer();
+      if (!unit.getPlayer().checkIfUnitsCanMove()) {
+        Game.setText("All Units have moved please end your turn!");
+      }
     } else {
       Game.setText("Dieser Zug ist nicht erlaubt!");
     }
@@ -184,12 +186,6 @@ public class GameField extends JPanel implements MouseListener, DragGestureListe
   public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
     // TODO Auto-generated method stub
     return null;
-  }
-
-  @Override
-  public void dragGestureRecognized(DragGestureEvent dge) {
-    // TODO Auto-generated method stub
-
   }
 
 }
