@@ -1,6 +1,7 @@
 package at.kexxs.game;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Insets;
@@ -59,20 +60,11 @@ public class Game extends JFrame {
   }
 
   public void initButton() {
-
     final JButton bStartNewGame = new JButton("Start New Game");
     bStartNewGame.addActionListener(new ActionListener() {
-
       @Override
       public void actionPerformed(ActionEvent e) {
-        log.info("Start New Game Button Pressed");
-        board.restart();
-        player1 = new Player(1, "Roter Spieler", true);
-        player2 = new Player(2, "Blauer Spieler", false);
-        board.fillBoardWithUnits(player1, player2);
-        setText(player1.getName() + " ist an der Reihe");
-        validate();
-
+        restartGame();
       }
     });
     gameContainer.add(bStartNewGame, BorderLayout.PAGE_START);
@@ -111,17 +103,24 @@ public class Game extends JFrame {
   }
 
   public Player changeActivePlayer() {
+    Player activePlayer = null;
     if (player1.isActive()) {
       player1.setActive(false);
       player2.setActive(true);
       player2.resestAllUnits();
-      return player2;
+      activePlayer = player2;
     } else {
       player2.setActive(false);
       player1.setActive(true);
       player1.resestAllUnits();
-      return player1;
+      activePlayer = player1;
     }
+
+    if (!activePlayer.checkIfUnitsCanMove()) {
+      gameEnded(getNotAcitvePlayer(), activePlayer);
+    }
+
+    return activePlayer;
   }
 
   public Player getAcitvePlayer() {
@@ -163,6 +162,29 @@ public class Game extends JFrame {
 
   public void setSidePanel(JPanel sidePanel) {
     this.sidePanel = sidePanel;
+  }
+
+  private void gameEnded(Player winner, Player loser) {
+    sideText.setText(winner.getName() + " has won this game!");
+    final JButton bGameEnded = new JButton("Restart Game");
+    bGameEnded.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        restartGame();
+      }
+    });
+    gameContainer.add(bGameEnded, BorderLayout.EAST);
+
+  }
+
+  private void restartGame() {
+    log.info("Start New Game Button Pressed");
+    board.restart();
+    player1 = new Player(1, "Roter Spieler", Color.cyan, true);
+    player2 = new Player(2, "Blauer Spieler", Color.lightGray, false);
+    board.fillBoardWithUnits(player1, player2);
+    setText(player1.getName() + " ist an der Reihe");
+    validate();
   }
 
 }

@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 import javax.swing.JPanel;
 
 import at.kexxs.game.Game;
-import at.kexxs.game.unit.Unit;
+import at.kexxs.game.unit.impl.Unit;
 
 public class GameField extends JPanel implements MouseListener, Transferable {
 

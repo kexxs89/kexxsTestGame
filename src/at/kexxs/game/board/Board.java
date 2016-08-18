@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 import javax.swing.JPanel;
 
 import at.kexxs.game.Game;
-import at.kexxs.game.unit.Unit;
+import at.kexxs.game.unit.impl.Unit;
 
 /**
  * @author Markus
@@ -136,11 +136,11 @@ public class Board extends JPanel {
 
   public void fillBoardWithUnits(Player player1, Player player2) {
     for (int i = 0; i < 10; i++) {
-      fields[i][0].setAndPaintUnit(new Unit(player1));
+      fields[i][0].setAndPaintUnit(new Unit(player1, "resources/unit.png"));
     }
 
     for (int i = 0; i < 10; i++) {
-      fields[i][Game.WIDTH - 1].setAndPaintUnit(new Unit(player2));
+      fields[i][Game.WIDTH - 1].setAndPaintUnit(new Unit(player2, "resources/unit.png"));
     }
 
   }

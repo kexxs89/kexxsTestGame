@@ -1,33 +1,30 @@
-package at.kexxs.game.unit;
+package at.kexxs.game.unit.impl;
 
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.logging.Logger;
 
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 import at.kexxs.game.Game;
 import at.kexxs.game.board.GameField;
 import at.kexxs.game.board.Player;
+import at.kexxs.game.unit.IUnit;
 import at.kexxs.game.util.Dice;
+import at.kexxs.game.util.ImageBuilder;
 
 /**
  * @author Markus
  */
-public class Unit extends JLabel {
+public class Unit extends JLabel implements IUnit {
 
   private static final long serialVersionUID = 1L;
   private final int attack = 1;
   private final int defense = 1;
   private final int movement = 10;
-  private long wounds = 1;
+  private int wounds = 1;
   private ImageIcon image;
-  private String inactiveImagePath;
-  private String activeImagePath;
   private String name = "unit";
   private GameField gameField;
   private final Player player;
@@ -35,22 +32,17 @@ public class Unit extends JLabel {
 
   private static final Logger log = Logger.getLogger(Unit.class.getName());
 
-  public Unit(Player player) {
+  public Unit(Player player, String imagePath) {
     this.player = player;
     setName("Unit" + (getPlayer().getUnits().size() + 1));
-
-    if (player.getId() == 1) {
-      activeImagePath = "resources/red.png";
-      inactiveImagePath = "resources/red_inactive.png";
-    } else {
-      activeImagePath = "resources/blue.png";
-      inactiveImagePath = "resources/blue_inactive.png";
-    }
-    setShownImageIcon(activeImagePath);
+    BufferedImage bImage = ImageBuilder.getBufferdImageFromPath(imagePath);
+    bImage = ImageBuilder.colorImage(bImage, player.getColor());
+    setShownImageIcon(ImageBuilder.scaleBufferdImage(bImage, 50, 50));
     player.getUnits().add(this);
 
   }
 
+  @Override
   public ImageIcon getImage() {
     return image;
   }
@@ -59,23 +51,26 @@ public class Unit extends JLabel {
     this.image = image;
   }
 
+  @Override
   public int getAttack() {
     return attack;
   }
 
+  @Override
   public int getDefense() {
     return defense;
   }
 
+  @Override
   public int getMovement() {
     return movement;
   }
 
-  public long getWounds() {
+  public int getWounds() {
     return wounds;
   }
 
-  public void setWounds(long wounds) {
+  public void setWounds(int wounds) {
     this.wounds = wounds;
   }
 
@@ -89,6 +84,7 @@ public class Unit extends JLabel {
     this.name = name;
   }
 
+  @Override
   public GameField getGameField() {
     return gameField;
   }
@@ -101,17 +97,12 @@ public class Unit extends JLabel {
     return player;
   }
 
+  @Override
   public boolean isHasMoved() {
     return hasMoved;
   }
 
   public void setHasMoved(boolean hasMoved) {
-    if (hasMoved) {
-      setShownImageIcon(inactiveImagePath);
-    } else {
-      setShownImageIcon(activeImagePath);
-    }
-
     this.hasMoved = hasMoved;
   }
 
@@ -120,6 +111,7 @@ public class Unit extends JLabel {
     return "Unit [attack=" + attack + ", defense=" + defense + ", movement=" + movement + ", wounds=" + wounds + ", toString()=" + super.toString() + "]";
   }
 
+  @Override
   public boolean checkIfMovementIsValid(GameField newField) {
 
     final int oldX = gameField.getPosY();
@@ -153,6 +145,7 @@ public class Unit extends JLabel {
     return false;
   }
 
+  @Override
   public boolean move(GameField newGameField) {
     if (!checkIfMovementIsValid(newGameField)) {
       if (checkIfAttackIsPossible(newGameField)) {
@@ -184,11 +177,16 @@ public class Unit extends JLabel {
 
   }
 
-  private Unit attack(Unit enemy) {
+  @Override
+  public Unit attack(Unit enemy) {
     final int attackValue = getAttack() * Dice.roll();
     log.info("Attack Value is:" + attackValue);
     final int defenseValue = enemy.getDefense() * Dice.roll();
     log.info("Defense Value is:" + defenseValue);
+    String battleInfo = new String();
+    battleInfo += "Attacks with: " + attackValue + "\n";
+    battleInfo += "Defense with: " + defenseValue + "\n";
+    Game.setSideText(battleInfo);
     if (attackValue >= defenseValue) {
       enemy.getPlayer().getUnits().remove(enemy);
       return this;
@@ -198,6 +196,7 @@ public class Unit extends JLabel {
     }
   }
 
+  @Override
   public void select() {
     String stats = new String();
     stats += "Name: " + name + "\n";
@@ -209,21 +208,11 @@ public class Unit extends JLabel {
 
   }
 
-  private void setShownImageIcon(String imgPath) {
-    BufferedImage bufferdImage = null;
-    Image scaledImage = null;
-    try {
-      bufferdImage = ImageIO.read(new File(imgPath));
-      scaledImage = bufferdImage.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
-    } catch (final IOException e) {
-      e.printStackTrace();
-    }
-
+  private void setShownImageIcon(Image scaledImage) {
     setIcon(new ImageIcon(scaledImage));
     setHorizontalAlignment(JLabel.CENTER);
     setVerticalAlignment(JLabel.CENTER);
     repaint();
-    setImage(image);
     validate();
   }
 
