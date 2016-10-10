@@ -1,20 +1,19 @@
-package at.kexxs.game.board;
+package at.kexxs.game.board.impl;
 
 import java.awt.Color;
 import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.util.logging.Logger;
 
 import javax.swing.JPanel;
 
 import at.kexxs.game.Game;
+import at.kexxs.game.board.IGameField;
 import at.kexxs.game.unit.impl.Unit;
 
-public class GameField extends JPanel implements MouseListener, Transferable {
+public class GameField extends JPanel implements IGameField {
 
   /**
    * @author Markus
@@ -109,12 +108,14 @@ public class GameField extends JPanel implements MouseListener, Transferable {
 
   }
 
+  @Override
   public void setAndPaintUnit(Unit unit) {
     add(unit);
     setUnit(unit);
     repaint();
   }
 
+  @Override
   public boolean checkIfHasUnit() {
     if (unit == null) {
       return false;
@@ -123,6 +124,7 @@ public class GameField extends JPanel implements MouseListener, Transferable {
     }
   }
 
+  @Override
   public boolean checkIfUnitofPlayer(Unit unit) {
     if (board.getGame().getAcitvePlayer().getId() == unit.getPlayer().getId()) {
       return true;
@@ -132,6 +134,7 @@ public class GameField extends JPanel implements MouseListener, Transferable {
 
   }
 
+  @Override
   public void removeUnit() {
     log.info("Unit was removed from field: " + getName());
     removeAll();
@@ -139,10 +142,11 @@ public class GameField extends JPanel implements MouseListener, Transferable {
     repaint();
   }
 
+  @Override
   public void selectUnit() {
     if (checkIfHasUnit()) {
       if (!checkIfUnitofPlayer(unit)) {
-        Game.setText("Nicht deine Figure");
+        Game.setText("Nicht deine Figure diese Figur gehört " + unit.getPlayer().getName());
         return;
       }
       if (unit.isHasMoved()) {
@@ -159,6 +163,7 @@ public class GameField extends JPanel implements MouseListener, Transferable {
     }
   }
 
+  @Override
   public void moveUnit(Unit unit) {
     if (unit.move(this)) {
       board.setSelectedUnit(null);
@@ -186,6 +191,11 @@ public class GameField extends JPanel implements MouseListener, Transferable {
   public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
     // TODO Auto-generated method stub
     return null;
+  }
+
+  @Override
+  public String toString() {
+    return "GameField [posY=" + posY + ", posX=" + posX + ", unit=" + unit + ", board=" + board + ", toString()=" + super.toString() + "]";
   }
 
 }

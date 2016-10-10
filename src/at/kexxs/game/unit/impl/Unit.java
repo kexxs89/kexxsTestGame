@@ -8,8 +8,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 import at.kexxs.game.Game;
-import at.kexxs.game.board.GameField;
-import at.kexxs.game.board.Player;
+import at.kexxs.game.board.impl.GameField;
+import at.kexxs.game.board.impl.Player;
 import at.kexxs.game.unit.IUnit;
 import at.kexxs.game.util.Dice;
 import at.kexxs.game.util.ImageBuilder;
@@ -20,9 +20,9 @@ import at.kexxs.game.util.ImageBuilder;
 public class Unit extends JLabel implements IUnit {
 
   private static final long serialVersionUID = 1L;
-  private final int attack = 1;
-  private final int defense = 1;
-  private final int movement = 10;
+  private int attack = 1;
+  private int defense = 1;
+  private int movement = 2;
   private int wounds = 1;
   private ImageIcon image;
   private String name = "unit";
@@ -30,13 +30,15 @@ public class Unit extends JLabel implements IUnit {
   private final Player player;
   private boolean hasMoved = false;
 
+  public static final String UNIT_RED = "resources/unit_red.png";
+  public static final String UNIT_BLUE = "resources/unit_blue.png";
+
   private static final Logger log = Logger.getLogger(Unit.class.getName());
 
   public Unit(Player player, String imagePath) {
     this.player = player;
     setName("Unit" + (getPlayer().getUnits().size() + 1));
-    BufferedImage bImage = ImageBuilder.getBufferdImageFromPath(imagePath);
-    bImage = ImageBuilder.colorImage(bImage, player.getColor());
+    final BufferedImage bImage = ImageBuilder.getBufferdImageFromPath(imagePath);
     setShownImageIcon(ImageBuilder.scaleBufferdImage(bImage, 50, 50));
     player.getUnits().add(this);
 
@@ -106,6 +108,18 @@ public class Unit extends JLabel implements IUnit {
     this.hasMoved = hasMoved;
   }
 
+  public void setAttack(int attack) {
+    this.attack = attack;
+  }
+
+  public void setDefense(int defense) {
+    this.defense = defense;
+  }
+
+  public void setMovement(int movement) {
+    this.movement = movement;
+  }
+
   @Override
   public String toString() {
     return "Unit [attack=" + attack + ", defense=" + defense + ", movement=" + movement + ", wounds=" + wounds + ", toString()=" + super.toString() + "]";
@@ -114,10 +128,10 @@ public class Unit extends JLabel implements IUnit {
   @Override
   public boolean checkIfMovementIsValid(GameField newField) {
 
-    final int oldX = gameField.getPosY();
-    final int oldY = gameField.getPosX();
-    final int newX = newField.getPosY();
-    final int newY = newField.getPosX();
+    final int oldY = gameField.getPosY();
+    final int oldX = gameField.getPosX();
+    final int newY = newField.getPosY();
+    final int newX = newField.getPosX();
 
     // check if own unit is on this field
     if (newField.getUnit() != null) {
@@ -127,6 +141,9 @@ public class Unit extends JLabel implements IUnit {
     if (oldX == newX) {
       final int difference = Math.abs(oldY - newY);
       if (difference <= movement) {
+        if (checkIfUnitIsInTheWayX(oldY, newY, newX)) {
+          return false;
+        }
         return true;
       } else {
         return false;
@@ -136,6 +153,9 @@ public class Unit extends JLabel implements IUnit {
     if (oldY == newY) {
       final int difference = Math.abs(oldX - newX);
       if (difference <= movement) {
+        if (checkIfUnitIsInTheWayY(oldX, newX, newY)) {
+          return false;
+        }
         return true;
       } else {
         return false;
@@ -164,7 +184,7 @@ public class Unit extends JLabel implements IUnit {
     }
     gameField.getBoard().removeUnit(getGameField().getPosY(), getGameField().getPosX());
     gameField.getBoard().setUnit(this, newGameField.getPosY(), newGameField.getPosX());
-    log.info(getName() + "befindet sich jetzt auf dem Feld " + newGameField.getName());
+    log.info(getName() + " befindet sich jetzt auf dem Feld " + newGameField.getName());
     setHasMoved(true);
     return true;
   }
@@ -214,6 +234,46 @@ public class Unit extends JLabel implements IUnit {
     setVerticalAlignment(JLabel.CENTER);
     repaint();
     validate();
+  }
+
+  private boolean checkIfUnitIsInTheWayX(int row1, int row2, int column) {
+    int start;
+    int end;
+    if (row1 < row2) {
+      start = row1;
+      end = row2;
+    } else {
+      start = row2;
+      end = row1 - 1;
+    }
+    start++;
+    for (int index = start; index <= end; index++) {
+      if (gameField.getBoard().checkIfUnitisOnField(index, column)) {
+        log.info(gameField.getBoard().getField(index, column).getUnit().getName() + " steht im Weg!");
+
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private boolean checkIfUnitIsInTheWayY(int column1, int column2, int row) {
+    int start;
+    int end;
+    if (column1 < column2) {
+      start = column1 + 1;
+      end = column2;
+    } else {
+      start = column2;
+      end = column1 - 1;
+    }
+    for (int index = start; index <= end; index++) {
+      if (gameField.getBoard().checkIfUnitisOnField(row, index)) {
+        log.info(gameField.getBoard().getField(row, index).getUnit().getName() + " steht im Weg!");
+        return true;
+      }
+    }
+    return false;
   }
 
 }

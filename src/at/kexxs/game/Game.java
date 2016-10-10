@@ -15,13 +15,13 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import at.kexxs.game.board.Board;
-import at.kexxs.game.board.Player;
+import at.kexxs.game.board.impl.Board;
+import at.kexxs.game.board.impl.Player;
 
 /**
  * @author Markus
  */
-public class Game extends JFrame {
+public class Game extends JFrame implements IGame {
 
   private static final Logger log = Logger.getLogger(Game.class.getName());
 
@@ -41,6 +41,7 @@ public class Game extends JFrame {
     initLayout();
   }
 
+  @Override
   public void initLayout() {
     log.info("Init Layout");
     gameContainer = getContentPane();
@@ -54,11 +55,13 @@ public class Game extends JFrame {
     setVisible(true);
   }
 
+  @Override
   public void initBoard() {
     board = new Board(this);
     gameContainer.add(board, BorderLayout.CENTER);
   }
 
+  @Override
   public void initButton() {
     final JButton bStartNewGame = new JButton("Start New Game");
     bStartNewGame.addActionListener(new ActionListener() {
@@ -83,6 +86,7 @@ public class Game extends JFrame {
 
   }
 
+  @Override
   public void initBottomText() {
     log.info("Init Bottom Text");
     textField = new JTextField();
@@ -123,6 +127,7 @@ public class Game extends JFrame {
     return activePlayer;
   }
 
+  @Override
   public Player getAcitvePlayer() {
 
     if (player1.isActive()) {
@@ -134,6 +139,7 @@ public class Game extends JFrame {
     }
   }
 
+  @Override
   public Player getNotAcitvePlayer() {
     if (player1.isActive()) {
       return player2;
@@ -142,6 +148,7 @@ public class Game extends JFrame {
     }
   }
 
+  @Override
   public void initSideLayout() {
     log.info("Init Site Layout");
     sideText = new JTextArea();
@@ -164,7 +171,8 @@ public class Game extends JFrame {
     this.sidePanel = sidePanel;
   }
 
-  private void gameEnded(Player winner, Player loser) {
+  @Override
+  public void gameEnded(Player winner, Player loser) {
     sideText.setText(winner.getName() + " has won this game!");
     final JButton bGameEnded = new JButton("Restart Game");
     bGameEnded.addActionListener(new ActionListener() {
@@ -177,7 +185,8 @@ public class Game extends JFrame {
 
   }
 
-  private void restartGame() {
+  @Override
+  public void restartGame() {
     log.info("Start New Game Button Pressed");
     board.restart();
     player1 = new Player(1, "Roter Spieler", Color.cyan, true);

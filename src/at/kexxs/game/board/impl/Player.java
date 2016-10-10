@@ -1,20 +1,21 @@
-package at.kexxs.game.board;
+package at.kexxs.game.board.impl;
 
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import at.kexxs.game.board.IPlayer;
 import at.kexxs.game.unit.impl.Unit;
 
-public class Player {
+public class Player implements IPlayer {
 
-  int id;
-  String name;
-  boolean active;
-  List<Unit> units;
-  Color color;
-  final Logger log = Logger.getLogger(Player.class.getName());
+  private int id;
+  private String name;
+  private boolean active;
+  private List<Unit> units;
+  private Color color;
+  private final Logger log = Logger.getLogger(Player.class.getName());
 
   public Player(int id, String name, Color color, boolean active) {
     this.id = id;
@@ -65,6 +66,7 @@ public class Player {
     this.color = color;
   }
 
+  @Override
   public boolean checkIfUnitsCanMove() {
     for (final Unit unit : units) {
       if (!unit.isHasMoved()) {
@@ -76,10 +78,17 @@ public class Player {
     return false;
   }
 
+  @Override
   public void resestAllUnits() {
     for (final Unit unit : units) {
       unit.setHasMoved(false);
     }
+  }
+
+  @Override
+  public String toString() {
+    return "Player [id=" + id + ", name=" + name + ", active=" + active + ", units=" + units + ", color=" + color + ", log=" + log + ", toString()="
+        + super.toString() + "]";
   }
 
 }

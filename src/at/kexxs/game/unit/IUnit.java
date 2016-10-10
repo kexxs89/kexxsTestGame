@@ -2,7 +2,7 @@ package at.kexxs.game.unit;
 
 import javax.swing.ImageIcon;
 
-import at.kexxs.game.board.GameField;
+import at.kexxs.game.board.impl.GameField;
 import at.kexxs.game.unit.impl.Unit;
 
 public interface IUnit {

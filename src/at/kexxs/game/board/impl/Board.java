@@ -1,18 +1,21 @@
-package at.kexxs.game.board;
+package at.kexxs.game.board.impl;
 
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 import javax.swing.JPanel;
 
 import at.kexxs.game.Game;
+import at.kexxs.game.board.IBoard;
+import at.kexxs.game.unit.impl.Soldier;
 import at.kexxs.game.unit.impl.Unit;
 
 /**
  * @author Markus
  */
-public class Board extends JPanel {
+public class Board extends JPanel implements IBoard {
   private static final long serialVersionUID = 1L;
   private final Game game;
   private GameField[][] fields;
@@ -69,15 +72,18 @@ public class Board extends JPanel {
     }
   }
 
+  @Override
   public void setUnit(Unit unit, int row, int column) {
     unit.setGameField(getField(row, column));
     fields[row][column].setAndPaintUnit(unit);
   }
 
+  @Override
   public void removeUnit(int row, int column) {
     fields[row][column].removeUnit();
   }
 
+  @Override
   public void clearBackgroundColor() {
     for (int row = 0; row < Game.WIDTH; row++) {
       for (int column = 0; column < Game.HEIGHT; column++) {
@@ -91,6 +97,7 @@ public class Board extends JPanel {
     }
   }
 
+  @Override
   public void restart() {
     log.info("Neues Spiel startet");
     removeAll();
@@ -134,13 +141,21 @@ public class Board extends JPanel {
     return fields[posY][posX];
   }
 
+  @Override
   public void fillBoardWithUnits(Player player1, Player player2) {
     for (int i = 0; i < 10; i++) {
-      fields[i][0].setAndPaintUnit(new Unit(player1, "resources/unit.png"));
+      fields[i][0].setAndPaintUnit(new Unit(player1, Unit.UNIT_RED));
+    }
+    for (int i = 0; i < 10; i++) {
+      fields[i][1].setAndPaintUnit(new Soldier(player1, Soldier.SOLDIER_RED));
     }
 
     for (int i = 0; i < 10; i++) {
-      fields[i][Game.WIDTH - 1].setAndPaintUnit(new Unit(player2, "resources/unit.png"));
+      fields[i][Game.WIDTH - 1].setAndPaintUnit(new Unit(player2, Unit.UNIT_BLUE));
+    }
+
+    for (int i = 0; i < 10; i++) {
+      fields[i][Game.WIDTH - 2].setAndPaintUnit(new Soldier(player2, Soldier.SOLDIER_BLUE));
     }
 
   }
@@ -154,6 +169,7 @@ public class Board extends JPanel {
 
   }
 
+  @Override
   public GameField findUnitOfPlayer(int playerId) {
     for (int row = 0; row < Game.WIDTH; row++) {
       for (int column = 0; column < Game.HEIGHT; column++) {
@@ -167,6 +183,16 @@ public class Board extends JPanel {
     }
     log.info("No Units found");
     return null;
+  }
+
+  @Override
+  public String toString() {
+    return "Board [game=" + game + ", fields=" + Arrays.toString(fields) + ", selectedUnit=" + selectedUnit + ", toString()=" + super.toString() + "]";
+  }
+
+  @Override
+  public boolean checkIfUnitisOnField(int row, int column) {
+    return (fields[row][column].getUnit() != null);
   }
 
 }
