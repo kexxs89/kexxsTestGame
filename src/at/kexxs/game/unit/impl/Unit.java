@@ -7,9 +7,9 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
-import at.kexxs.game.Game;
 import at.kexxs.game.board.impl.GameField;
 import at.kexxs.game.board.impl.Player;
+import at.kexxs.game.impl.Game;
 import at.kexxs.game.unit.IUnit;
 import at.kexxs.game.util.Dice;
 import at.kexxs.game.util.ImageBuilder;
@@ -24,11 +24,14 @@ public class Unit extends JLabel implements IUnit {
   private int defense = 1;
   private int movement = 2;
   private int wounds = 1;
+  private int range = 0;
+  private int rangeAttack = 0;
   private ImageIcon image;
   private String name = "unit";
   private GameField gameField;
   private final Player player;
   private boolean hasMoved = false;
+  private boolean jump = false;
 
   public static final String UNIT_RED = "resources/unit_red.png";
   public static final String UNIT_BLUE = "resources/unit_blue.png";
@@ -120,6 +123,22 @@ public class Unit extends JLabel implements IUnit {
     this.movement = movement;
   }
 
+  public int getRange() {
+    return range;
+  }
+
+  public void setRange(int range) {
+    this.range = range;
+  }
+
+  public int getRangeAttack() {
+    return rangeAttack;
+  }
+
+  public void setRangeAttack(int rangeAttack) {
+    this.rangeAttack = rangeAttack;
+  }
+
   @Override
   public String toString() {
     return "Unit [attack=" + attack + ", defense=" + defense + ", movement=" + movement + ", wounds=" + wounds + ", toString()=" + super.toString() + "]";
@@ -133,6 +152,8 @@ public class Unit extends JLabel implements IUnit {
     final int newY = newField.getPosY();
     final int newX = newField.getPosX();
 
+    final boolean hasJump = gameField.getUnit().isJump();
+
     // check if own unit is on this field
     if (newField.getUnit() != null) {
       return false;
@@ -141,7 +162,7 @@ public class Unit extends JLabel implements IUnit {
     if (oldX == newX) {
       final int difference = Math.abs(oldY - newY);
       if (difference <= movement) {
-        if (checkIfUnitIsInTheWayX(oldY, newY, newX)) {
+        if (!hasJump && checkIfUnitIsInTheWayX(oldY, newY, newX)) {
           return false;
         }
         return true;
@@ -153,7 +174,7 @@ public class Unit extends JLabel implements IUnit {
     if (oldY == newY) {
       final int difference = Math.abs(oldX - newX);
       if (difference <= movement) {
-        if (checkIfUnitIsInTheWayY(oldX, newX, newY)) {
+        if (!hasJump && checkIfUnitIsInTheWayY(oldX, newX, newY)) {
           return false;
         }
         return true;
@@ -167,6 +188,23 @@ public class Unit extends JLabel implements IUnit {
 
   @Override
   public boolean move(GameField newGameField) {
+    if (!checkIfMovementIsValid(newGameField)) {
+      gameField.getBoard().setSelectedUnit(null);
+      log.info(getName() + "ist nicht erlaubt sich auf das Feld zu bewegen " + newGameField.getName());
+      return false;
+    }
+    gameField.getBoard().removeUnit(getGameField().getPosY(), getGameField().getPosX());
+    gameField.getBoard().setUnit(this, newGameField.getPosY(), newGameField.getPosX());
+    log.info(getName() + " befindet sich jetzt auf dem Feld " + newGameField.getName());
+    setHasMoved(true);
+    return true;
+  }
+
+  public boolean attack(GameField newGameField) {
+    if (newGameField.getUnit() == null || newGameField.getUnit().getPlayer().getId() == getPlayer().getId()) {
+      log.info("Sie können diese Ziel nicht angreifen");
+      return false;
+    }
     if (!checkIfMovementIsValid(newGameField)) {
       if (checkIfAttackIsPossible(newGameField)) {
         final Unit victoriusUnit = attack(newGameField.getUnit());
@@ -198,10 +236,20 @@ public class Unit extends JLabel implements IUnit {
   }
 
   @Override
+  public boolean isJump() {
+    return jump;
+  }
+
+  @Override
+  public void setJump(boolean jump) {
+    this.jump = jump;
+  }
+
+  @Override
   public Unit attack(Unit enemy) {
-    final int attackValue = getAttack() * Dice.roll();
+    final int attackValue = Dice.roll(getAttack());
     log.info("Attack Value is:" + attackValue);
-    final int defenseValue = enemy.getDefense() * Dice.roll();
+    final int defenseValue = Dice.roll(enemy.getDefense());
     log.info("Defense Value is:" + defenseValue);
     String battleInfo = new String();
     battleInfo += "Attacks with: " + attackValue + "\n";
@@ -223,7 +271,15 @@ public class Unit extends JLabel implements IUnit {
     stats += "Attack: " + attack + "\n";
     stats += "Defense: " + defense + "\n";
     stats += "Movement: " + movement + "\n";
-    stats += "Wounds: " + wounds + "\n";
+    if (range > 0) {
+      stats += "Range: " + range + "\n";
+    }
+    if (rangeAttack > 0) {
+      stats += "Range Attack: " + rangeAttack + "\n";
+    }
+    if (jump) {
+      stats += "Kann springen \n";
+    }
     Game.setSideText(stats);
 
   }

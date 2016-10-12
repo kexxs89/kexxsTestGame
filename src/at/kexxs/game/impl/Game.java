@@ -1,9 +1,10 @@
-package at.kexxs.game;
+package at.kexxs.game.impl;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,12 +12,15 @@ import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import at.kexxs.game.IGame;
 import at.kexxs.game.board.impl.Board;
 import at.kexxs.game.board.impl.Player;
+import at.kexxs.game.constant.TextConstant;
 
 /**
  * @author Markus
@@ -39,6 +43,7 @@ public class Game extends JFrame implements IGame {
   public Game() {
 
     initLayout();
+    restartGame();
   }
 
   @Override
@@ -90,7 +95,7 @@ public class Game extends JFrame implements IGame {
   public void initBottomText() {
     log.info("Init Bottom Text");
     textField = new JTextField();
-    textField.setText("Willkommen bei meinen Spiel!");
+    textField.setText(TextConstant.GAME_WELCOME);
     textField.setVisible(true);
     textField.setEditable(false);
     gameContainer.add(textField, BorderLayout.PAGE_END);
@@ -120,7 +125,7 @@ public class Game extends JFrame implements IGame {
       activePlayer = player1;
     }
 
-    if (!activePlayer.checkIfUnitsCanMove()) {
+    if (!activePlayer.checkIfKingIsAlive()) {
       gameEnded(getNotAcitvePlayer(), activePlayer);
     }
 
@@ -154,7 +159,7 @@ public class Game extends JFrame implements IGame {
     sideText = new JTextArea();
     sideText.setAlignmentX(JTextArea.CENTER_ALIGNMENT);
     sideText.setAlignmentY(JTextArea.CENTER_ALIGNMENT);
-    sideText.setText("Hier werdne Infos zu der ausgewählten Einheit angezeigt!");
+    sideText.setText(TextConstant.GAME_SIDE_TEXT);
     sideText.setEditable(false);
     sideText.setLineWrap(true);
     sideText.setMargin(new Insets(10, 10, 10, 10));
@@ -173,24 +178,18 @@ public class Game extends JFrame implements IGame {
 
   @Override
   public void gameEnded(Player winner, Player loser) {
-    sideText.setText(winner.getName() + " has won this game!");
-    final JButton bGameEnded = new JButton("Restart Game");
-    bGameEnded.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        restartGame();
-      }
-    });
-    gameContainer.add(bGameEnded, BorderLayout.EAST);
+
+    JOptionPane.showMessageDialog(new Frame(), winner.getName() + " has won this game!");
+    restartGame();
 
   }
 
   @Override
   public void restartGame() {
-    log.info("Start New Game Button Pressed");
+    log.info(TextConstant.GAME_START_NEW_GAME);
     board.restart();
-    player1 = new Player(1, "Roter Spieler", Color.cyan, true);
-    player2 = new Player(2, "Blauer Spieler", Color.lightGray, false);
+    player1 = new Player(1, TextConstant.RED_PLAYER, Color.cyan, true);
+    player2 = new Player(2, TextConstant.BLUE_PLAYER, Color.lightGray, false);
     board.fillBoardWithUnits(player1, player2);
     setText(player1.getName() + " ist an der Reihe");
     validate();

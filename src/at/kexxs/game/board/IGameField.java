@@ -3,6 +3,7 @@ package at.kexxs.game.board;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.MouseListener;
 
+import at.kexxs.game.unit.IRange;
 import at.kexxs.game.unit.impl.Unit;
 
 public interface IGameField extends MouseListener, Transferable {
@@ -18,5 +19,9 @@ public interface IGameField extends MouseListener, Transferable {
   boolean checkIfHasUnit();
 
   void selectUnit();
+
+  void attackUnit(Unit unit);
+
+  void shootUnit(IRange unit);
 
 }

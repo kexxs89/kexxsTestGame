@@ -29,4 +29,8 @@ public interface IUnit {
 
   public boolean checkIfMovementIsValid(GameField newField);
 
+  boolean isJump();
+
+  void setJump(boolean jump);
+
 }

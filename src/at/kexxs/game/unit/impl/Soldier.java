@@ -9,6 +9,11 @@ import at.kexxs.game.unit.ISoldier;
 
 public class Soldier extends Unit implements ISoldier {
 
+  private static final long serialVersionUID = 8783712320733914134L;
+
+  public static final String RED = "resources/soldier_red.png";
+  public static final String BLUE = "resources/soldier_blue.png";
+
   private final int defense = 2;
   private final int attack = 1;
   private final int movement = 3;
@@ -20,10 +25,5 @@ public class Soldier extends Unit implements ISoldier {
     setMovement(movement);
 
   }
-
-  private static final long serialVersionUID = 8783712320733914134L;
-
-  public static final String SOLDIER_RED = "resources/soldier_red.png";
-  public static final String SOLDIER_BLUE = "resources/soldier_blue.png";
 
 }

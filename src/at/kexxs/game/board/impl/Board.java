@@ -7,10 +7,15 @@ import java.util.logging.Logger;
 
 import javax.swing.JPanel;
 
-import at.kexxs.game.Game;
 import at.kexxs.game.board.IBoard;
+import at.kexxs.game.constant.TextConstant;
+import at.kexxs.game.impl.Game;
+import at.kexxs.game.unit.impl.Archer;
+import at.kexxs.game.unit.impl.King;
+import at.kexxs.game.unit.impl.Knight;
 import at.kexxs.game.unit.impl.Soldier;
 import at.kexxs.game.unit.impl.Unit;
+import at.kexxs.game.unit.impl.Wizard;
 
 /**
  * @author Markus
@@ -99,7 +104,7 @@ public class Board extends JPanel implements IBoard {
 
   @Override
   public void restart() {
-    log.info("Neues Spiel startet");
+    log.info(TextConstant.GAME_RESTART);
     removeAll();
     init();
     validate();
@@ -137,6 +142,38 @@ public class Board extends JPanel implements IBoard {
 
   }
 
+  public void checkIfRangerAttackIsAvailableFields(GameField field, Unit unit) {
+    final int positionX = field.getPosY();
+    final int positionY = field.getPosX();
+    final int range = unit.getRange();
+
+    for (int newPos = positionX + 1; newPos <= (positionX + range); newPos++) {
+      if (newPos < Game.WIDTH) {
+        fields[newPos][positionY].setBackground(Color.YELLOW);
+      }
+    }
+
+    for (int newPos = positionX - 1; newPos >= (positionX - range); newPos--) {
+      if (newPos >= 0) {
+        fields[newPos][positionY].setBackground(Color.YELLOW);
+      }
+    }
+
+    for (int newPos = positionY + 1; newPos <= (positionY + range); newPos++) {
+      if (newPos < Game.HEIGHT) {
+        fields[positionX][newPos].setBackground(Color.YELLOW);
+      }
+    }
+
+    for (int newPos = positionY - 1; newPos >= (positionY - range); newPos--) {
+      if (newPos >= 0) {
+        fields[positionX][newPos].setBackground(Color.YELLOW);
+      }
+    }
+    repaint();
+
+  }
+
   public GameField getField(int posY, int posX) {
     return fields[posY][posX];
   }
@@ -144,18 +181,36 @@ public class Board extends JPanel implements IBoard {
   @Override
   public void fillBoardWithUnits(Player player1, Player player2) {
     for (int i = 0; i < 10; i++) {
-      fields[i][0].setAndPaintUnit(new Unit(player1, Unit.UNIT_RED));
+      if (i == 4) {
+        fields[i][0].setAndPaintUnit(new Wizard(player1, Wizard.RED));
+      } else if (i == 5) {
+        fields[i][0].setAndPaintUnit(new King(player1, King.RED));
+      } else if (i == 3 || i == 6) {
+        fields[i][0].setAndPaintUnit(new Knight(player1, Knight.RED));
+      } else {
+        fields[i][0].setAndPaintUnit(new Archer(player1, Archer.RED));
+      }
     }
     for (int i = 0; i < 10; i++) {
-      fields[i][1].setAndPaintUnit(new Soldier(player1, Soldier.SOLDIER_RED));
+      fields[i][1].setAndPaintUnit(new Soldier(player1, Soldier.RED));
     }
 
     for (int i = 0; i < 10; i++) {
-      fields[i][Game.WIDTH - 1].setAndPaintUnit(new Unit(player2, Unit.UNIT_BLUE));
+
+      fields[i][Game.WIDTH - 2].setAndPaintUnit(new Soldier(player2, Soldier.BLUE));
     }
 
     for (int i = 0; i < 10; i++) {
-      fields[i][Game.WIDTH - 2].setAndPaintUnit(new Soldier(player2, Soldier.SOLDIER_BLUE));
+
+      if (i == 4) {
+        fields[i][Game.WIDTH - 1].setAndPaintUnit(new Wizard(player2, Wizard.BLUE));
+      } else if (i == 5) {
+        fields[i][Game.WIDTH - 1].setAndPaintUnit(new King(player2, King.BLUE));
+      } else if (i == 3 || i == 6) {
+        fields[i][Game.WIDTH - 1].setAndPaintUnit(new Knight(player2, Knight.BLUE));
+      } else {
+        fields[i][Game.WIDTH - 1].setAndPaintUnit(new Archer(player2, Archer.BLUE));
+      }
     }
 
   }

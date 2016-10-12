@@ -9,8 +9,9 @@ import java.util.logging.Logger;
 
 import javax.swing.JPanel;
 
-import at.kexxs.game.Game;
 import at.kexxs.game.board.IGameField;
+import at.kexxs.game.impl.Game;
+import at.kexxs.game.unit.IRange;
 import at.kexxs.game.unit.impl.Unit;
 
 public class GameField extends JPanel implements IGameField {
@@ -23,6 +24,9 @@ public class GameField extends JPanel implements IGameField {
   private int posX;
   private Unit unit;
   private final Board board;
+
+  public static final int LEFT_CLICK = 1;
+  public static final int RIGHT_CLICK = 3;
 
   private static final Logger log = Logger.getLogger(GameField.class.getName());
 
@@ -78,14 +82,25 @@ public class GameField extends JPanel implements IGameField {
 
   @Override
   public void mouseClicked(MouseEvent e) {
+
+    log.info(String.valueOf(e.getButton()));
+
     board.clearBackgroundColor();
 
     if (board.selectedUnit == null) {
       selectUnit();
     } else {
-      moveUnit(board.selectedUnit);
-    }
+      if (e.getButton() == LEFT_CLICK) {
+        moveUnit(board.selectedUnit);
+      } else if (e.getButton() == RIGHT_CLICK) {
 
+        if (board.selectedUnit.getRange() == 0) {
+          attackUnit(board.selectedUnit);
+        } else {
+          shootUnit((IRange) board.selectedUnit);
+        }
+      }
+    }
   }
 
   @Override
@@ -154,7 +169,9 @@ public class GameField extends JPanel implements IGameField {
         return;
       }
       Game.setText("Folgende Figur wurde ausgewählt: " + unit.getName());
+      board.checkIfRangerAttackIsAvailableFields(board.getField(posY, posX), unit);
       board.checkAvailableFields(board.getField(posY, posX), unit);
+
       unit.setGameField(board.getField(posY, posX));
       unit.select();
       board.setSelectedUnit(unit);
@@ -167,12 +184,29 @@ public class GameField extends JPanel implements IGameField {
   public void moveUnit(Unit unit) {
     if (unit.move(this)) {
       board.setSelectedUnit(null);
-      if (!unit.getPlayer().checkIfUnitsCanMove()) {
-        Game.setText("All Units have moved please end your turn!");
-      }
+      board.getGame().changeActivePlayer();
     } else {
       Game.setText("Dieser Zug ist nicht erlaubt!");
     }
+  }
+
+  @Override
+  public void attackUnit(Unit unit) {
+    if (unit.attack(this)) {
+      board.setSelectedUnit(null);
+      board.getGame().changeActivePlayer();
+    } else {
+      Game.setText("Dieser Zug ist nicht erlaubt!");
+    }
+  }
+
+  @Override
+  public void shootUnit(IRange unit) {
+    if (unit.shoot(getUnit())) {
+      board.setSelectedUnit(null);
+      removeUnit();
+    }
+    board.getGame().changeActivePlayer();
   }
 
   @Override

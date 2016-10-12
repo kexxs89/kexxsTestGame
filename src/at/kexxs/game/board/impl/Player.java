@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import at.kexxs.game.board.IPlayer;
+import at.kexxs.game.unit.IKing;
 import at.kexxs.game.unit.impl.Unit;
 
 public class Player implements IPlayer {
@@ -89,6 +90,15 @@ public class Player implements IPlayer {
   public String toString() {
     return "Player [id=" + id + ", name=" + name + ", active=" + active + ", units=" + units + ", color=" + color + ", log=" + log + ", toString()="
         + super.toString() + "]";
+  }
+
+  public boolean checkIfKingIsAlive() {
+    for (final Unit unit : units) {
+      if (unit instanceof IKing) {
+        return true;
+      }
+    }
+    return false;
   }
 
 }
