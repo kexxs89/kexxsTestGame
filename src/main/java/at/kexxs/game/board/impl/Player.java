@@ -23,7 +23,7 @@ public class Player implements IPlayer {
     this.name = name;
     this.active = active;
     this.color = color;
-    units = new ArrayList<>();
+    units = new ArrayList<Unit>();
     log.info("Neuer Spieler wurde erstellt: " + name);
   }
 
@@ -66,8 +66,7 @@ public class Player implements IPlayer {
   public void setColor(Color color) {
     this.color = color;
   }
-
-  @Override
+	
   public boolean checkIfUnitsCanMove() {
     for (final Unit unit : units) {
       if (!unit.isHasMoved()) {
@@ -79,7 +78,6 @@ public class Player implements IPlayer {
     return false;
   }
 
-  @Override
   public void resestAllUnits() {
     for (final Unit unit : units) {
       unit.setHasMoved(false);

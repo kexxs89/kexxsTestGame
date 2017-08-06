@@ -21,7 +21,7 @@ import at.kexxs.game.unit.impl.Wizard;
  * @author Markus
  */
 public class Board extends JPanel implements IBoard {
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 12164984616L;
   private final Game game;
   private GameField[][] fields;
   public Unit selectedUnit;
@@ -77,18 +77,15 @@ public class Board extends JPanel implements IBoard {
     }
   }
 
-  @Override
   public void setUnit(Unit unit, int row, int column) {
     unit.setGameField(getField(row, column));
     fields[row][column].setAndPaintUnit(unit);
   }
 
-  @Override
   public void removeUnit(int row, int column) {
     fields[row][column].removeUnit();
   }
 
-  @Override
   public void clearBackgroundColor() {
     for (int row = 0; row < Game.WIDTH; row++) {
       for (int column = 0; column < Game.HEIGHT; column++) {
@@ -102,7 +99,6 @@ public class Board extends JPanel implements IBoard {
     }
   }
 
-  @Override
   public void restart() {
     log.info(TextConstant.GAME_RESTART);
     removeAll();
@@ -178,7 +174,6 @@ public class Board extends JPanel implements IBoard {
     return fields[posY][posX];
   }
 
-  @Override
   public void fillBoardWithUnits(Player player1, Player player2) {
     for (int i = 0; i < 10; i++) {
       if (i == 4) {
@@ -212,23 +207,18 @@ public class Board extends JPanel implements IBoard {
         fields[i][Game.WIDTH - 1].setAndPaintUnit(new Archer(player2, Archer.BLUE));
       }
     }
-
   }
 
   public void nextPlayer() {
-
     final Player activePlayer = game.changeActivePlayer();
     log.info(activePlayer.getName() + " ist an der Reihe!");
     Game.setText(activePlayer.getName() + " ist an der Reihe!");
     validate();
-
   }
 
-  @Override
   public GameField findUnitOfPlayer(int playerId) {
     for (int row = 0; row < Game.WIDTH; row++) {
       for (int column = 0; column < Game.HEIGHT; column++) {
-
         if (fields[row][column].getUnit() != null) {
           if (fields[row][column].getUnit().getPlayer().getId() == playerId) {
             return fields[row][column];
@@ -245,7 +235,6 @@ public class Board extends JPanel implements IBoard {
     return "Board [game=" + game + ", fields=" + Arrays.toString(fields) + ", selectedUnit=" + selectedUnit + ", toString()=" + super.toString() + "]";
   }
 
-  @Override
   public boolean checkIfUnitisOnField(int row, int column) {
     return (fields[row][column].getUnit() != null);
   }

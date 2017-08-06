@@ -47,7 +47,6 @@ public class Unit extends JLabel implements IUnit {
 
   }
 
-  @Override
   public ImageIcon getImage() {
     return image;
   }
@@ -56,17 +55,14 @@ public class Unit extends JLabel implements IUnit {
     this.image = image;
   }
 
-  @Override
   public int getAttack() {
     return attack;
   }
 
-  @Override
   public int getDefense() {
     return defense;
   }
 
-  @Override
   public int getMovement() {
     return movement;
   }
@@ -89,7 +85,6 @@ public class Unit extends JLabel implements IUnit {
     this.name = name;
   }
 
-  @Override
   public GameField getGameField() {
     return gameField;
   }
@@ -102,7 +97,6 @@ public class Unit extends JLabel implements IUnit {
     return player;
   }
 
-  @Override
   public boolean isHasMoved() {
     return hasMoved;
   }
@@ -144,7 +138,6 @@ public class Unit extends JLabel implements IUnit {
     return "Unit [attack=" + attack + ", defense=" + defense + ", movement=" + movement + ", wounds=" + wounds + ", toString()=" + super.toString() + "]";
   }
 
-  @Override
   public boolean checkIfMovementIsValid(GameField newField) {
 
     final int oldY = gameField.getPosY();
@@ -186,7 +179,6 @@ public class Unit extends JLabel implements IUnit {
     return false;
   }
 
-  @Override
   public boolean move(GameField newGameField) {
     if (!checkIfMovementIsValid(newGameField)) {
       gameField.getBoard().setSelectedUnit(null);
@@ -235,17 +227,14 @@ public class Unit extends JLabel implements IUnit {
 
   }
 
-  @Override
   public boolean isJump() {
     return jump;
   }
 
-  @Override
   public void setJump(boolean jump) {
     this.jump = jump;
   }
 
-  @Override
   public Unit attack(Unit enemy) {
     final int attackValue = Dice.roll(getAttack());
     log.info("Attack Value is:" + attackValue);
@@ -264,7 +253,6 @@ public class Unit extends JLabel implements IUnit {
     }
   }
 
-  @Override
   public void select() {
     String stats = new String();
     stats += "Name: " + name + "\n";

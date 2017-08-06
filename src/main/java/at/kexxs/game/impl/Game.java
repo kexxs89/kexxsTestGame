@@ -35,8 +35,8 @@ public class Game extends JFrame implements IGame {
   JPanel sidePanel;
   static JTextField textField;
   static JTextArea sideText;
-  public final static int WIDTH = 10;
-  public final static int HEIGHT = 10;
+  public final static int WIDTH = 20;
+  public final static int HEIGHT = 20;
   Player player1;
   Player player2;
 
@@ -45,8 +45,7 @@ public class Game extends JFrame implements IGame {
     initLayout();
     restartGame();
   }
-
-  @Override
+	
   public void initLayout() {
     log.info("Init Layout");
     gameContainer = getContentPane();
@@ -55,22 +54,19 @@ public class Game extends JFrame implements IGame {
     initBoard();
     initBottomText();
     initSideLayout();
-    setSize(1200, 800);
+    setSize(1350, 1000);
     setResizable(false);
     setVisible(true);
   }
 
-  @Override
   public void initBoard() {
     board = new Board(this);
     gameContainer.add(board, BorderLayout.CENTER);
   }
 
-  @Override
   public void initButton() {
     final JButton bStartNewGame = new JButton("Start New Game");
     bStartNewGame.addActionListener(new ActionListener() {
-      @Override
       public void actionPerformed(ActionEvent e) {
         restartGame();
       }
@@ -79,9 +75,7 @@ public class Game extends JFrame implements IGame {
 
     final JButton bNextRound = new JButton("Runde beenden");
     bNextRound.addActionListener(new ActionListener() {
-
-      @Override
-      public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e) {
 
         changeActivePlayer();
         log.info("Change Activte Player new Active Player is: " + getAcitvePlayer().getName());
@@ -91,7 +85,6 @@ public class Game extends JFrame implements IGame {
 
   }
 
-  @Override
   public void initBottomText() {
     log.info("Init Bottom Text");
     textField = new JTextField();
@@ -132,7 +125,6 @@ public class Game extends JFrame implements IGame {
     return activePlayer;
   }
 
-  @Override
   public Player getAcitvePlayer() {
 
     if (player1.isActive()) {
@@ -144,7 +136,6 @@ public class Game extends JFrame implements IGame {
     }
   }
 
-  @Override
   public Player getNotAcitvePlayer() {
     if (player1.isActive()) {
       return player2;
@@ -153,7 +144,6 @@ public class Game extends JFrame implements IGame {
     }
   }
 
-  @Override
   public void initSideLayout() {
     log.info("Init Site Layout");
     sideText = new JTextArea();
@@ -176,15 +166,13 @@ public class Game extends JFrame implements IGame {
     this.sidePanel = sidePanel;
   }
 
-  @Override
   public void gameEnded(Player winner, Player loser) {
 
     JOptionPane.showMessageDialog(new Frame(), winner.getName() + " has won this game!");
     restartGame();
 
   }
-
-  @Override
+	
   public void restartGame() {
     log.info(TextConstant.GAME_START_NEW_GAME);
     board.restart();

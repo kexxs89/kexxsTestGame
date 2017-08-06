@@ -64,7 +64,6 @@ public class MainWindow {
     verticalBox.add(btnHilfe);
 
     btnHilfe.addActionListener(new ActionListener() {
-      @Override
       public void actionPerformed(ActionEvent e) {
         final Help help = new Help();
         help.getFrame().setVisible(true);
@@ -73,7 +72,6 @@ public class MainWindow {
     });
 
     btnStart.addActionListener(new ActionListener() {
-      @Override
       public void actionPerformed(ActionEvent e) {
         new Game();
         frame.setVisible(false);

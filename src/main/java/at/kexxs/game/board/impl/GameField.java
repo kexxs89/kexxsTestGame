@@ -80,7 +80,6 @@ public class GameField extends JPanel implements IGameField {
     super.setBackground(bg);
   };
 
-  @Override
   public void mouseClicked(MouseEvent e) {
 
     log.info(String.valueOf(e.getButton()));
@@ -103,34 +102,28 @@ public class GameField extends JPanel implements IGameField {
     }
   }
 
-  @Override
   public void mousePressed(MouseEvent e) {
 
   }
-
-  @Override
+	
   public void mouseReleased(MouseEvent e) {
 
   }
 
-  @Override
   public void mouseEntered(MouseEvent e) {
 
   }
 
-  @Override
   public void mouseExited(MouseEvent e) {
 
   }
 
-  @Override
   public void setAndPaintUnit(Unit unit) {
     add(unit);
     setUnit(unit);
     repaint();
   }
 
-  @Override
   public boolean checkIfHasUnit() {
     if (unit == null) {
       return false;
@@ -139,7 +132,6 @@ public class GameField extends JPanel implements IGameField {
     }
   }
 
-  @Override
   public boolean checkIfUnitofPlayer(Unit unit) {
     if (board.getGame().getAcitvePlayer().getId() == unit.getPlayer().getId()) {
       return true;
@@ -149,7 +141,6 @@ public class GameField extends JPanel implements IGameField {
 
   }
 
-  @Override
   public void removeUnit() {
     log.info("Unit was removed from field: " + getName());
     removeAll();
@@ -157,7 +148,6 @@ public class GameField extends JPanel implements IGameField {
     repaint();
   }
 
-  @Override
   public void selectUnit() {
     if (checkIfHasUnit()) {
       if (!checkIfUnitofPlayer(unit)) {
@@ -180,7 +170,6 @@ public class GameField extends JPanel implements IGameField {
     }
   }
 
-  @Override
   public void moveUnit(Unit unit) {
     if (unit.move(this)) {
       board.setSelectedUnit(null);
@@ -190,7 +179,6 @@ public class GameField extends JPanel implements IGameField {
     }
   }
 
-  @Override
   public void attackUnit(Unit unit) {
     if (unit.attack(this)) {
       board.setSelectedUnit(null);
@@ -200,7 +188,6 @@ public class GameField extends JPanel implements IGameField {
     }
   }
 
-  @Override
   public void shootUnit(IRange unit) {
     if (unit.shoot(getUnit())) {
       board.setSelectedUnit(null);
@@ -209,19 +196,16 @@ public class GameField extends JPanel implements IGameField {
     board.getGame().changeActivePlayer();
   }
 
-  @Override
   public DataFlavor[] getTransferDataFlavors() {
     // TODO Auto-generated method stub
     return null;
   }
 
-  @Override
   public boolean isDataFlavorSupported(DataFlavor flavor) {
     // TODO Auto-generated method stub
     return false;
   }
 
-  @Override
   public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
     // TODO Auto-generated method stub
     return null;

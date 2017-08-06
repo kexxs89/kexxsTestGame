@@ -33,9 +33,9 @@ public class Archer extends Unit implements IArcher {
 
   @Override
   public boolean shoot(Unit enemy) {
-    final int attackValue = getRangeAttack() * Dice.roll();
+    final int attackValue = Dice.roll(getRangeAttack());
     log.info("Shoot Attack Value is:" + attackValue);
-    final int defenseValue = enemy.getDefense() * Dice.roll();
+    final int defenseValue = Dice.roll(enemy.getDefense());
     log.info("Defense Value is:" + defenseValue);
     String battleInfo = new String();
     battleInfo += "Shoot Attacks with: " + attackValue + "\n";
