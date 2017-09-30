@@ -16,7 +16,7 @@ public class Soldier extends Unit implements ISoldier {
 
   private final int defense = 2;
   private final int attack = 1;
-  private final int movement = 3;
+  private final int movement = 5;
 
   public Soldier(Player player, String imagePath) {
     super(player, imagePath);

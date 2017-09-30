@@ -167,7 +167,6 @@ public class Board extends JPanel implements IBoard {
       }
     }
     repaint();
-
   }
 
   public GameField getField(int posY, int posX) {

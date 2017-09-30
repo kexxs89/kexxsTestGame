@@ -35,8 +35,8 @@ public class Game extends JFrame implements IGame {
   JPanel sidePanel;
   static JTextField textField;
   static JTextArea sideText;
-  public final static int WIDTH = 20;
-  public final static int HEIGHT = 20;
+  public final static int WIDTH = 10;
+  public final static int HEIGHT = 10;
   Player player1;
   Player player2;
 

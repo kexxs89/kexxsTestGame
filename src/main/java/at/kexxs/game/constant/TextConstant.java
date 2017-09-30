@@ -7,7 +7,7 @@ public class TextConstant {
   public static final String BUTTON_HELP = "Hilfe";
   public static final String BUTTON_RESTART = "Starte Neues Spiel!";
 
-  public static final String GAME_SIDE_TEXT = "Hier werden Infos zu der ausgew‰hlten Einheit angezeigt!";
+  public static final String GAME_SIDE_TEXT = "Hier werden Infos zu der ausgew√§hlten Einheit angezeigt!";
   public static final String GAME_START_NEW_GAME = "Start New Game Button Pressed";
   public static final String GAME_WELCOME = "Willkommen bei meinen Spiel!";
   public static final String GAME_RESTART = "Neues Spiel startet!";

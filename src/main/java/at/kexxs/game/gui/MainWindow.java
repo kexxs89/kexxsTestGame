@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.logging.Logger;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -13,12 +14,20 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
 import at.kexxs.game.impl.Game;
+import javafx.util.Callback;
+
+import static jdk.nashorn.internal.runtime.regexp.joni.Config.log;
 
 public class MainWindow {
 
   private JFrame frame;
-
-  /**
+  
+  private Callback callback;
+	
+	private static final Logger log = Logger.getLogger(Dice.class.getName());
+	
+	
+	/**
    * Create the application.
    */
   public MainWindow() {
@@ -62,7 +71,6 @@ public class MainWindow {
     final JButton btnHilfe = new JButton("Hilfe");
     btnHilfe.setAlignmentX(Component.CENTER_ALIGNMENT);
     verticalBox.add(btnHilfe);
-
     btnHilfe.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         final Help help = new Help();
@@ -70,6 +78,26 @@ public class MainWindow {
         frame.setVisible(false);
       }
     });
+	
+	
+		final JButton btnDice = new JButton("Dice");
+		btnDice.setAlignmentX(Component.CENTER_ALIGNMENT);
+		verticalBox.add(btnDice);
+		btnDice.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					callback = new Callback() {
+						public Object call(Object param) {
+							log.info("Im back bitches:" + param);
+							return null;
+						}
+					};
+					final Dice dice = new Dice(callback);
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
 
     btnStart.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {

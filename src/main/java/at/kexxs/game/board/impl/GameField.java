@@ -1,13 +1,14 @@
 package at.kexxs.game.board.impl;
 
-import java.awt.Color;
+import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.MouseEvent;
+import java.awt.font.TextLayout;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import javax.swing.JPanel;
+import javax.swing.*;
 
 import at.kexxs.game.board.IGameField;
 import at.kexxs.game.impl.Game;
@@ -92,7 +93,7 @@ public class GameField extends JPanel implements IGameField {
       if (e.getButton() == LEFT_CLICK) {
         moveUnit(board.selectedUnit);
       } else if (e.getButton() == RIGHT_CLICK) {
-
+      	
         if (board.selectedUnit.getRange() == 0) {
           attackUnit(board.selectedUnit);
         } else {
