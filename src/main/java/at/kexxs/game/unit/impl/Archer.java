@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 import at.kexxs.game.board.impl.Player;
 import at.kexxs.game.impl.Game;
 import at.kexxs.game.unit.IArcher;
-import at.kexxs.game.util.Dice;
+import at.kexxs.game.util.DiceUtil;
 
 public class Archer extends Unit implements IArcher {
 
@@ -33,9 +33,9 @@ public class Archer extends Unit implements IArcher {
 
   @Override
   public boolean shoot(Unit enemy) {
-    final int attackValue = Dice.roll(getRangeAttack());
+    final int attackValue = DiceUtil.roll(getRangeAttack());
     log.info("Shoot Attack Value is:" + attackValue);
-    final int defenseValue = Dice.roll(enemy.getDefense());
+    final int defenseValue = DiceUtil.roll(enemy.getDefense());
     log.info("Defense Value is:" + defenseValue);
     String battleInfo = new String();
     battleInfo += "Shoot Attacks with: " + attackValue + "\n";

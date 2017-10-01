@@ -14,6 +14,7 @@ import at.kexxs.game.board.IGameField;
 import at.kexxs.game.impl.Game;
 import at.kexxs.game.unit.IRange;
 import at.kexxs.game.unit.impl.Unit;
+import javafx.util.Callback;
 
 public class GameField extends JPanel implements IGameField {
 
@@ -181,12 +182,21 @@ public class GameField extends JPanel implements IGameField {
   }
 
   public void attackUnit(Unit unit) {
-    if (unit.attack(this)) {
-      board.setSelectedUnit(null);
-      board.getGame().changeActivePlayer();
-    } else {
-      Game.setText("Dieser Zug ist nicht erlaubt!");
-    }
+  	Callback callback = new Callback() {
+			@Override
+			public Object call(Object param) {
+				boolean result = (Boolean) param;
+				if (result) {
+					board.setSelectedUnit(null);
+					board.getGame().changeActivePlayer();
+				} else {
+					Game.setText("Dieser Zug ist nicht erlaubt!");
+				}
+				return null;
+			}
+		};
+		unit.attack(this, callback);
+
   }
 
   public void shootUnit(IRange unit) {

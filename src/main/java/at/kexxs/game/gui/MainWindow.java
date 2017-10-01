@@ -13,10 +13,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
+import at.kexxs.game.dice.Dice;
+import at.kexxs.game.dice.DiceDTO;
+import at.kexxs.game.dice.DiceResultDTO;
 import at.kexxs.game.impl.Game;
 import javafx.util.Callback;
-
-import static jdk.nashorn.internal.runtime.regexp.joni.Config.log;
 
 public class MainWindow {
 
@@ -85,17 +86,15 @@ public class MainWindow {
 		verticalBox.add(btnDice);
 		btnDice.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try {
 					callback = new Callback() {
 						public Object call(Object param) {
-							log.info("Im back bitches:" + param);
+							DiceResultDTO dice = (DiceResultDTO) param;
+							log.info("Attacker:" + dice.getAttackValue() + " Defense:" + dice.getDefenseValue() + " Reslt: " + dice.isSuccess() );
 							return null;
 						}
 					};
-					final Dice dice = new Dice(callback);
-				} catch (InterruptedException e1) {
-					e1.printStackTrace();
-				}
+					final Dice dice = new Dice(callback, 1 , 2);
+
 			}
 		});
 

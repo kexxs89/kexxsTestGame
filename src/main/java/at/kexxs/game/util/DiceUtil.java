@@ -1,6 +1,6 @@
 package at.kexxs.game.util;
 
-public class Dice {
+public class DiceUtil {
 
   public static int roll() {
     return (int) (6.0 * Math.random()) + 1;

@@ -9,10 +9,13 @@ import javax.swing.JLabel;
 
 import at.kexxs.game.board.impl.GameField;
 import at.kexxs.game.board.impl.Player;
+import at.kexxs.game.dice.Dice;
+import at.kexxs.game.dice.DiceResultDTO;
 import at.kexxs.game.impl.Game;
 import at.kexxs.game.unit.IUnit;
-import at.kexxs.game.util.Dice;
 import at.kexxs.game.util.ImageBuilder;
+import javafx.util.Callback;
+import sun.plugin2.jvm.RemoteJVMLauncher;
 
 /**
  * @author Markus
@@ -192,32 +195,49 @@ public class Unit extends JLabel implements IUnit {
     return true;
   }
 
-  public boolean attack(GameField newGameField) {
+  @Override
+  public void attack(final GameField newGameField, final Callback methodCallback) {
     if (newGameField.getUnit() == null || newGameField.getUnit().getPlayer().getId() == getPlayer().getId()) {
       log.info("Sie können diese Ziel nicht angreifen");
-      return false;
+      methodCallback.call(false);
     }
     if (!checkIfMovementIsValid(newGameField)) {
       if (checkIfAttackIsPossible(newGameField)) {
-        final Unit victoriusUnit = attack(newGameField.getUnit());
-        gameField.getBoard().removeUnit(getGameField().getPosY(), getGameField().getPosX());
-        gameField.getBoard().removeUnit(newGameField.getPosY(), newGameField.getPosX());
-        gameField.getBoard().setUnit(victoriusUnit, newGameField.getPosY(), newGameField.getPosX());
-        setHasMoved(true);
-        log.info(victoriusUnit.getName() + "hat den Kampf gewonnen und befindet sich jetzt auf dem Feld " + newGameField.getName());
-        return true;
-      }
+      	Callback callback = new Callback() {
+					@Override
+					public Object call(Object param) {
+						final Unit victoriusUnit = (Unit) param;
+						log.info("Victorius Unit: " + victoriusUnit.getPlayer());
+						gameField.getBoard().removeUnit(getGameField().getPosY(), getGameField().getPosX());
+						gameField.getBoard().removeUnit(newGameField.getPosY(), newGameField.getPosX());
+						gameField.getBoard().setUnit(victoriusUnit, newGameField.getPosY(), newGameField.getPosX());
+						setHasMoved(true);
+						log.info(victoriusUnit.getName() + "hat den Kampf gewonnen und befindet sich jetzt auf dem Feld " + newGameField.getName());
+						methodCallback.call(true);
+						return null;
+					}
+				};
+      	attackAction(newGameField.getUnit() , callback);
+	
+				
+      }else{
+				gameField.getBoard().setSelectedUnit(null);
+				log.info(getName() + "ist nicht erlaubt sich auf das Feld zu bewegen " + newGameField.getName());
+				methodCallback.call(false);
+			}
+    }else{
+			gameField.getBoard().removeUnit(getGameField().getPosY(), getGameField().getPosX());
+			gameField.getBoard().setUnit(this, newGameField.getPosY(), newGameField.getPosX());
+			log.info(getName() + " befindet sich jetzt auf dem Feld " + newGameField.getName());
+			setHasMoved(true);
+			methodCallback.call(true);
+		}
 
-      gameField.getBoard().setSelectedUnit(null);
-      log.info(getName() + "ist nicht erlaubt sich auf das Feld zu bewegen " + newGameField.getName());
-      return false;
-    }
-    gameField.getBoard().removeUnit(getGameField().getPosY(), getGameField().getPosX());
-    gameField.getBoard().setUnit(this, newGameField.getPosY(), newGameField.getPosX());
-    log.info(getName() + " befindet sich jetzt auf dem Feld " + newGameField.getName());
-    setHasMoved(true);
-    return true;
   }
+  
+  private Unit getUnit(){
+  	return this;
+	}
 
   private boolean checkIfAttackIsPossible(GameField newGameField) {
     if (newGameField.getUnit() != null && newGameField.getUnit().getPlayer().getId() != getPlayer().getId()) {
@@ -235,22 +255,29 @@ public class Unit extends JLabel implements IUnit {
     this.jump = jump;
   }
 
-  public Unit attack(Unit enemy) {
-    final int attackValue = Dice.roll(getAttack());
-    log.info("Attack Value is:" + attackValue);
-    final int defenseValue = Dice.roll(enemy.getDefense());
-    log.info("Defense Value is:" + defenseValue);
-    String battleInfo = new String();
-    battleInfo += "Attacks with: " + attackValue + "\n";
-    battleInfo += "Defense with: " + defenseValue + "\n";
-    Game.setSideText(battleInfo);
-    if (attackValue >= defenseValue) {
-      enemy.getPlayer().getUnits().remove(enemy);
-      return this;
-    } else {
-      getPlayer().getUnits().remove(this);
-      return enemy;
-    }
+  public void attackAction(final Unit enemy, final Callback callback) {
+		Callback diceCallback = new Callback() {
+			public Unit call(Object param) {
+				DiceResultDTO result = (DiceResultDTO) param;
+				final long attackValue = result.getAttackValue();
+				log.info("Attack Value is:" + attackValue);
+				final long defenseValue = result.getDefenseValue();
+				log.info("Defense Value is:" + defenseValue);
+				String battleInfo = new String();
+				battleInfo += "Attacks with: " + attackValue + "\n";
+				battleInfo += "Defense with: " + defenseValue + "\n";
+				Game.setSideText(battleInfo);
+				if (result.isSuccess()) {
+					enemy.getPlayer().getUnits().remove(enemy);
+					callback.call(getUnit());
+				} else {
+					getPlayer().getUnits().remove(this);
+					callback.call(enemy);
+				}
+				return null;
+			};
+		};
+		new Dice(diceCallback, getAttack() , enemy.getDefense());
   }
 
   public void select() {

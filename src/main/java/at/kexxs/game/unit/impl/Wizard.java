@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 import at.kexxs.game.board.impl.Player;
 import at.kexxs.game.impl.Game;
 import at.kexxs.game.unit.IWizard;
-import at.kexxs.game.util.Dice;
+import at.kexxs.game.util.DiceUtil;
 
 public class Wizard extends Unit implements IWizard {
   private static final long serialVersionUID = 8783512320234214134L;
@@ -35,7 +35,7 @@ public class Wizard extends Unit implements IWizard {
   public boolean shoot(Unit enemy) {
     final int attackValue = rangeAttack;
     log.info("Shoot Attack Value is:" + attackValue);
-    final int defenseValue = Dice.roll(enemy.getDefense());
+    final int defenseValue = DiceUtil.roll(enemy.getDefense());
     log.info("Defense Value is:" + defenseValue);
     String battleInfo = new String();
     battleInfo += "Shoot Attacks with: " + attackValue + "\n";
