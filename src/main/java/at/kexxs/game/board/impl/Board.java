@@ -66,7 +66,7 @@ public class Board extends JPanel implements IBoard {
         if ((row + column) % 2 == 0) {
           fields[row][column].setBackground(Color.gray, true);
         } else {
-          fields[row][column].setBackground(Color.black, true);
+          fields[row][column].setBackground(Color.darkGray, true);
         }
 
         fields[row][column].setPosY(row);
@@ -92,7 +92,7 @@ public class Board extends JPanel implements IBoard {
         if ((row + column) % 2 == 0) {
           fields[row][column].setBackground(Color.gray);
         } else {
-          fields[row][column].setBackground(Color.black);
+          fields[row][column].setBackground(Color.darkGray);
         }
         fields[row][column].repaint();
       }

@@ -200,11 +200,19 @@ public class GameField extends JPanel implements IGameField {
   }
 
   public void shootUnit(IRange unit) {
-    if (unit.shoot(getUnit())) {
-      board.setSelectedUnit(null);
-      removeUnit();
-    }
-    board.getGame().changeActivePlayer();
+  	Callback callback = new Callback() {
+			@Override
+			public Object call(Object param) {
+				boolean result = (Boolean) param;
+				if (result) {
+					board.setSelectedUnit(null);
+					removeUnit();
+				}
+				board.getGame().changeActivePlayer();
+				return null;
+			}
+		};
+		unit.shoot(getUnit() , callback);
   }
 
   public DataFlavor[] getTransferDataFlavors() {

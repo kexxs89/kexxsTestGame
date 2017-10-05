@@ -2,11 +2,14 @@ package at.kexxs.game.unit.impl;
 
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
+import at.kexxs.game.board.impl.Board;
 import at.kexxs.game.board.impl.GameField;
 import at.kexxs.game.board.impl.Player;
 import at.kexxs.game.dice.Dice;
@@ -38,6 +41,7 @@ public class Unit extends JLabel implements IUnit {
 
   public static final String UNIT_RED = "resources/unit_red.png";
   public static final String UNIT_BLUE = "resources/unit_blue.png";
+	public static final String UNIT_DIE = "resources/cross.png";
 
   private static final Logger log = Logger.getLogger(Unit.class.getName());
 
@@ -208,18 +212,28 @@ public class Unit extends JLabel implements IUnit {
 					public Object call(Object param) {
 						final Unit victoriusUnit = (Unit) param;
 						log.info("Victorius Unit: " + victoriusUnit.getPlayer());
-						gameField.getBoard().removeUnit(getGameField().getPosY(), getGameField().getPosX());
-						gameField.getBoard().removeUnit(newGameField.getPosY(), newGameField.getPosX());
-						gameField.getBoard().setUnit(victoriusUnit, newGameField.getPosY(), newGameField.getPosX());
-						setHasMoved(true);
-						log.info(victoriusUnit.getName() + "hat den Kampf gewonnen und befindet sich jetzt auf dem Feld " + newGameField.getName());
-						methodCallback.call(true);
+						Callback dieCallback = new Callback() {
+							@Override
+							public Object call(Object param) {
+								gameField.getBoard().removeUnit(getGameField().getPosY(), getGameField().getPosX());
+								gameField.getBoard().removeUnit(newGameField.getPosY(), newGameField.getPosX());
+								gameField.getBoard().setUnit(victoriusUnit, newGameField.getPosY(), newGameField.getPosX());
+								setHasMoved(true);
+								log.info(victoriusUnit.getName() + "hat den Kampf gewonnen und befindet sich jetzt auf dem Feld " + newGameField.getName());
+								methodCallback.call(true);
+								return null;
+								
+							}
+						};
+						if(victoriusUnit.getPlayer().getId() == gameField.getUnit().getPlayer().getId()){
+							newGameField.getUnit().die(dieCallback);
+						}else{
+							gameField.getUnit().die(dieCallback);
+						}
 						return null;
 					}
 				};
       	attackAction(newGameField.getUnit() , callback);
-	
-				
       }else{
 				gameField.getBoard().setSelectedUnit(null);
 				log.info(getName() + "ist nicht erlaubt sich auf das Feld zu bewegen " + newGameField.getName());
@@ -346,5 +360,18 @@ public class Unit extends JLabel implements IUnit {
     }
     return false;
   }
+  
+  public void die(final Callback methodCallback){
+		final BufferedImage bImage = ImageBuilder.getBufferdImageFromPath(UNIT_DIE);
+		setShownImageIcon(ImageBuilder.scaleBufferdImage(bImage, 50, 50));
+  	Timer timer = new Timer();
+		TimerTask tt = new TimerTask() {
+			@Override
+			public void run() {
+				methodCallback.call(null);
+			}
+		};
+  	timer.schedule(tt, 1000);
+	}
 
 }

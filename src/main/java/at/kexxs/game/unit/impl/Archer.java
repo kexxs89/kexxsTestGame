@@ -3,9 +3,11 @@ package at.kexxs.game.unit.impl;
 import java.util.logging.Logger;
 
 import at.kexxs.game.board.impl.Player;
+import at.kexxs.game.dice.Dice;
+import at.kexxs.game.dice.DiceResultDTO;
 import at.kexxs.game.impl.Game;
 import at.kexxs.game.unit.IArcher;
-import at.kexxs.game.util.DiceUtil;
+import javafx.util.Callback;
 
 public class Archer extends Unit implements IArcher {
 
@@ -32,20 +34,29 @@ public class Archer extends Unit implements IArcher {
   }
 
   @Override
-  public boolean shoot(Unit enemy) {
-    final int attackValue = DiceUtil.roll(getRangeAttack());
-    log.info("Shoot Attack Value is:" + attackValue);
-    final int defenseValue = DiceUtil.roll(enemy.getDefense());
-    log.info("Defense Value is:" + defenseValue);
-    String battleInfo = new String();
-    battleInfo += "Shoot Attacks with: " + attackValue + "\n";
-    battleInfo += "Defense with: " + defenseValue + "\n";
-    Game.setSideText(battleInfo);
-    if (attackValue >= defenseValue) {
-      enemy.getPlayer().getUnits().remove(enemy);
-      return true;
-    } else {
-      return false;
-    }
+  public void shoot(final Unit enemy, final Callback callback) {
+  	
+  	Callback shootCallback = new Callback() {
+			@Override
+			public Object call(Object param) {
+				boolean result = false;
+				DiceResultDTO diceResultDTO = (DiceResultDTO) param;
+				final long attackValue = diceResultDTO.getAttackValue();
+				log.info("Shoot Attack Value is:" + attackValue);
+				final long defenseValue = diceResultDTO.getDefenseValue();
+				log.info("Defense Value is:" + defenseValue);
+				String battleInfo = new String();
+				battleInfo += "Shoot Attacks with: " + attackValue + "\n";
+				battleInfo += "Defense with: " + defenseValue + "\n";
+				Game.setSideText(battleInfo);
+				if (diceResultDTO.isSuccess()) {
+					result = true;
+					//enemy.getPlayer().getUnits().remove(enemy);
+				}
+				callback.call(result);
+				return null;
+			};
+		};
+  	new Dice(shootCallback, getRangeAttack() , enemy.getDefense());
   }
 }
