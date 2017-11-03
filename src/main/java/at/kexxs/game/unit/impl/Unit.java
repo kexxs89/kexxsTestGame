@@ -291,7 +291,7 @@ public class Unit extends JLabel implements IUnit {
 				return null;
 			};
 		};
-		new Dice(diceCallback, getAttack() , enemy.getDefense());
+		new Dice(diceCallback, getAttack() , enemy.getDefense(), getGameField().getBoard().getGame().getActionBar());
   }
 
   public void select() {

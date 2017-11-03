@@ -20,7 +20,6 @@ public class Dice {
 	
 	private static final Logger log = Logger.getLogger(Dice.class.getName());
 	
-	private JFrame frame;
 	private DiceDTO attackDice;
 	private DiceDTO defenseDice;
 	
@@ -35,11 +34,7 @@ public class Dice {
 	private final ScheduledExecutorService scheduler =
 			Executors.newScheduledThreadPool(1);
 	
-	public Dice(final Callback callback, final long minAttack, final long minDefense )  {
-		frame = new JFrame();
-		frame.setSize(300, 300);
-		frame.setVisible(true);
-		frame.setLayout(new BorderLayout());
+	public Dice(final Callback callback, final long minAttack, final long minDefense , final Container container)  {
 		
 		attackDice = new DiceDTO();
 		defenseDice = new DiceDTO();
@@ -54,17 +49,18 @@ public class Dice {
 		
 		setDiceImage(attackDice,1L);
 		setDiceImage(defenseDice,1L);
-		frame.add(attackDice.getLabel(), BorderLayout.WEST);
-		frame.add(defenseDice.getLabel(), BorderLayout.EAST);
+		container.add(attackDice.getLabel());
+		container.add(defenseDice.getLabel());
 		
 		final Runnable rollerRunnable = new Runnable() {
 			public void run() {
 				rollDice(attackDice , minAttack);
 				rollDice(defenseDice, minDefense);
+				container.revalidate();
 			}
 		};
 		final ScheduledFuture<?> roller =
-				scheduler.scheduleAtFixedRate(rollerRunnable, 100, 100, MILLISECONDS);
+				scheduler.scheduleAtFixedRate(rollerRunnable, 50, 50, MILLISECONDS);
 		
 		scheduler.schedule(new Runnable() {
 			public void run() {
@@ -75,14 +71,17 @@ public class Dice {
 				result.setAttackValue(resultFirstDice);
 				result.setDefenseValue(resultSecondDice);
 				result.setSuccess(resultFirstDice > resultSecondDice);
+				container.revalidate();
+				
+				
 				callback.call(result);
 				scheduler.schedule(new Runnable() {
 					public void run() {
-						frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
-					}
-				}, 2 , SECONDS);
+						container.removeAll();
+						}
+					}, 2 , SECONDS);
 			}
-		}, 3, SECONDS);
+		}, 1500, MILLISECONDS);
 	}
 	
 	private void rollDice(DiceDTO dice, long min){

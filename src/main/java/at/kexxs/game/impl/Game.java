@@ -1,11 +1,6 @@
 package at.kexxs.game.impl;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.logging.Logger;
@@ -21,6 +16,7 @@ import at.kexxs.game.IGame;
 import at.kexxs.game.board.impl.Board;
 import at.kexxs.game.board.impl.Player;
 import at.kexxs.game.constant.TextConstant;
+import at.kexxs.game.unit.impl.Unit;
 
 /**
  * @author Markus
@@ -32,9 +28,9 @@ public class Game extends JFrame implements IGame {
   private static final long serialVersionUID = 1L;
   Board board;
   Container gameContainer;
-  JPanel sidePanel;
   static JTextField textField;
   static JTextArea sideText;
+  JPanel actionPanel = new JPanel();
   public final static int WIDTH = 10;
   public final static int HEIGHT = 10;
   Player player1;
@@ -54,24 +50,41 @@ public class Game extends JFrame implements IGame {
     initBoard();
     initBottomText();
     initSideLayout();
-    setSize(1350, 1000);
+    initActionBar();
+    setSize(1450, 1000);
     setResizable(false);
     setVisible(true);
   }
-
-  public void initBoard() {
+	
+	private void initActionBar() {
+		
+		final Dimension dimension = new Dimension(200, 400);
+		actionPanel.setPreferredSize(dimension);
+		actionPanel.setLayout(new GridLayout(2,0));
+		gameContainer.add(actionPanel, BorderLayout.EAST);
+		
+	}
+	
+	public void initBoard() {
     board = new Board(this);
+		final Dimension dimension = new Dimension(800, 800);
+    board.setPreferredSize(dimension);
     gameContainer.add(board, BorderLayout.CENTER);
   }
 
   public void initButton() {
+  	
+  	Container buttonContainer = new Container();
+  	buttonContainer.setLayout(new GridLayout(0,2));
+  	
     final JButton bStartNewGame = new JButton("Start New Game");
     bStartNewGame.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         restartGame();
       }
     });
-    gameContainer.add(bStartNewGame, BorderLayout.PAGE_START);
+		
+		buttonContainer.add(bStartNewGame);
 
     final JButton bNextRound = new JButton("Runde beenden");
     bNextRound.addActionListener(new ActionListener() {
@@ -81,7 +94,9 @@ public class Game extends JFrame implements IGame {
         log.info("Change Activte Player new Active Player is: " + getAcitvePlayer().getName());
       }
     });
-    gameContainer.add(bNextRound, BorderLayout.EAST);
+		buttonContainer.add(bNextRound);
+	
+		gameContainer.add(buttonContainer, BorderLayout.PAGE_START);
 
   }
 
@@ -103,6 +118,11 @@ public class Game extends JFrame implements IGame {
     log.info("Set Side Text: " + text);
     sideText.setText(text);
   }
+  
+  public Container getActionBar(){
+  	return  actionPanel;
+  	
+	}
 
   public Player changeActivePlayer() {
     Player activePlayer = null;
@@ -157,14 +177,7 @@ public class Game extends JFrame implements IGame {
     sideText.setPreferredSize(dimension);
     gameContainer.add(sideText, BorderLayout.WEST);
   }
-
-  public JPanel getSidePanel() {
-    return sidePanel;
-  }
-
-  public void setSidePanel(JPanel sidePanel) {
-    this.sidePanel = sidePanel;
-  }
+	
 
   public void gameEnded(Player winner, Player loser) {
 

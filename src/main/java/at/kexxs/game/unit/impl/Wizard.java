@@ -7,7 +7,6 @@ import at.kexxs.game.dice.Dice;
 import at.kexxs.game.dice.DiceResultDTO;
 import at.kexxs.game.impl.Game;
 import at.kexxs.game.unit.IWizard;
-import at.kexxs.game.util.DiceUtil;
 import javafx.util.Callback;
 
 public class Wizard extends Unit implements IWizard {
@@ -58,7 +57,7 @@ public class Wizard extends Unit implements IWizard {
 				return null;
 			};
 		};
-		new Dice(shootCallback, rangeAttack , enemy.getDefense());
+		new Dice(shootCallback, rangeAttack , enemy.getDefense() ,getGameField().getBoard().getGame().getActionBar());
 	}
 
 }

@@ -79,24 +79,6 @@ public class MainWindow {
         frame.setVisible(false);
       }
     });
-	
-	
-		final JButton btnDice = new JButton("Dice");
-		btnDice.setAlignmentX(Component.CENTER_ALIGNMENT);
-		verticalBox.add(btnDice);
-		btnDice.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-					callback = new Callback() {
-						public Object call(Object param) {
-							DiceResultDTO dice = (DiceResultDTO) param;
-							log.info("Attacker:" + dice.getAttackValue() + " Defense:" + dice.getDefenseValue() + " Reslt: " + dice.isSuccess() );
-							return null;
-						}
-					};
-					final Dice dice = new Dice(callback, 1 , 2);
-
-			}
-		});
 
     btnStart.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
