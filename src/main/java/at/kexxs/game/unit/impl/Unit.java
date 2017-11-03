@@ -1,13 +1,14 @@
 package at.kexxs.game.unit.impl;
 
-import java.awt.Image;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Logger;
 
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
+import javax.swing.*;
 
 import at.kexxs.game.board.impl.Board;
 import at.kexxs.game.board.impl.GameField;
@@ -17,6 +18,7 @@ import at.kexxs.game.dice.DiceResultDTO;
 import at.kexxs.game.impl.Game;
 import at.kexxs.game.unit.IUnit;
 import at.kexxs.game.util.ImageBuilder;
+import at.kexxs.game.util.UnitAction;
 import javafx.util.Callback;
 import sun.plugin2.jvm.RemoteJVMLauncher;
 
@@ -291,7 +293,7 @@ public class Unit extends JLabel implements IUnit {
 				return null;
 			};
 		};
-		new Dice(diceCallback, getAttack() , enemy.getDefense(), getGameField().getBoard().getGame().getActionBar());
+		new Dice(diceCallback, this , enemy, getGameField().getBoard().getGame().getActionBar());
   }
 
   public void select() {
@@ -372,6 +374,30 @@ public class Unit extends JLabel implements IUnit {
 			}
 		};
   	timer.schedule(tt, 1000);
+	}
+	
+	public void openActionMenu(){
+  	Container container = getGameField().getBoard().getGame().getActionBar();
+  	container.removeAll();
+		container.setLayout(new GridLayout(2 , 0));
+		final JButton attackButton = new JButton("Attack");
+		
+		attackButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				gameField.getBoard().setAction(UnitAction.ATTACK);
+			}
+		});
+		
+		final JButton moveButton = new JButton("Move");
+		moveButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				gameField.getBoard().setAction(UnitAction.MOVE);
+			}
+		});
+		container.add(attackButton);
+		container.add(moveButton);
 	}
 
 }

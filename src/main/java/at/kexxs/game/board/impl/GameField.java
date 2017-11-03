@@ -14,6 +14,7 @@ import at.kexxs.game.board.IGameField;
 import at.kexxs.game.impl.Game;
 import at.kexxs.game.unit.IRange;
 import at.kexxs.game.unit.impl.Unit;
+import at.kexxs.game.util.UnitAction;
 import javafx.util.Callback;
 
 public class GameField extends JPanel implements IGameField {
@@ -26,10 +27,6 @@ public class GameField extends JPanel implements IGameField {
   private int posX;
   private Unit unit;
   private final Board board;
-
-  public static final int LEFT_CLICK = 1;
-  public static final int RIGHT_CLICK = 3;
-
   private static final Logger log = Logger.getLogger(GameField.class.getName());
 
   public GameField(Board board) {
@@ -91,16 +88,15 @@ public class GameField extends JPanel implements IGameField {
     if (board.selectedUnit == null) {
       selectUnit();
     } else {
-      if (e.getButton() == LEFT_CLICK) {
-        moveUnit(board.selectedUnit);
-      } else if (e.getButton() == RIGHT_CLICK) {
-      	
-        if (board.selectedUnit.getRange() == 0) {
-          attackUnit(board.selectedUnit);
-        } else {
-          shootUnit((IRange) board.selectedUnit);
-        }
-      }
+    	if(board.getAction().equals(UnitAction.MOVE)){
+				moveUnit(board.selectedUnit);
+			}else if(board.getAction().equals(UnitAction.ATTACK)){
+				if (board.selectedUnit.getRange() == 0) {
+					attackUnit(board.selectedUnit);
+				} else {
+					shootUnit((IRange) board.selectedUnit);
+				}
+			}
     }
   }
 
@@ -163,9 +159,9 @@ public class GameField extends JPanel implements IGameField {
       Game.setText("Folgende Figur wurde ausgewählt: " + unit.getName());
       board.checkIfRangerAttackIsAvailableFields(board.getField(posY, posX), unit);
       board.checkAvailableFields(board.getField(posY, posX), unit);
-
       unit.setGameField(board.getField(posY, posX));
       unit.select();
+      unit.openActionMenu();
       board.setSelectedUnit(unit);
     } else {
       Game.setText("Keine Figur auf diesem Feld!");
@@ -229,8 +225,8 @@ public class GameField extends JPanel implements IGameField {
     // TODO Auto-generated method stub
     return null;
   }
-
-  @Override
+	
+	@Override
   public String toString() {
     return "GameField [posY=" + posY + ", posX=" + posX + ", unit=" + unit + ", board=" + board + ", toString()=" + super.toString() + "]";
   }

@@ -57,6 +57,6 @@ public class Archer extends Unit implements IArcher {
 				return null;
 			};
 		};
-  	new Dice(shootCallback, getRangeAttack() , enemy.getDefense(), getGameField().getBoard().getGame().getActionBar());
+  	new Dice(shootCallback, this , enemy, getGameField().getBoard().getGame().getActionBar());
   }
 }

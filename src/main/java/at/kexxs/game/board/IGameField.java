@@ -5,6 +5,7 @@ import java.awt.event.MouseListener;
 
 import at.kexxs.game.unit.IRange;
 import at.kexxs.game.unit.impl.Unit;
+import at.kexxs.game.util.UnitAction;
 
 public interface IGameField extends MouseListener, Transferable {
 
@@ -23,5 +24,5 @@ public interface IGameField extends MouseListener, Transferable {
   void attackUnit(Unit unit);
 
   void shootUnit(IRange unit);
-
+	
 }

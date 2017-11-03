@@ -16,6 +16,7 @@ import at.kexxs.game.unit.impl.Knight;
 import at.kexxs.game.unit.impl.Soldier;
 import at.kexxs.game.unit.impl.Unit;
 import at.kexxs.game.unit.impl.Wizard;
+import at.kexxs.game.util.UnitAction;
 
 /**
  * @author Markus
@@ -25,8 +26,10 @@ public class Board extends JPanel implements IBoard {
   private final Game game;
   private GameField[][] fields;
   public Unit selectedUnit;
-
-  private static final Logger log = Logger.getLogger(Board.class.getName());
+	private UnitAction action = UnitAction.IDLE;
+	
+	
+	private static final Logger log = Logger.getLogger(Board.class.getName());
 
   /** Creates a new instance of ChessBoard */
   public Board(Game game) {
@@ -212,6 +215,7 @@ public class Board extends JPanel implements IBoard {
     final Player activePlayer = game.changeActivePlayer();
     log.info(activePlayer.getName() + " ist an der Reihe!");
     Game.setText(activePlayer.getName() + " ist an der Reihe!");
+    setAction(UnitAction.IDLE);
     validate();
   }
 
@@ -237,5 +241,12 @@ public class Board extends JPanel implements IBoard {
   public boolean checkIfUnitisOnField(int row, int column) {
     return (fields[row][column].getUnit() != null);
   }
-
+	
+	public UnitAction getAction() {
+		return action;
+	}
+	
+	public void setAction(UnitAction action) {
+		this.action = action;
+	}
 }

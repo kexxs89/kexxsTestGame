@@ -17,6 +17,7 @@ import at.kexxs.game.board.impl.Board;
 import at.kexxs.game.board.impl.Player;
 import at.kexxs.game.constant.TextConstant;
 import at.kexxs.game.unit.impl.Unit;
+import at.kexxs.game.util.UnitAction;
 
 /**
  * @author Markus
@@ -95,9 +96,7 @@ public class Game extends JFrame implements IGame {
       }
     });
 		buttonContainer.add(bNextRound);
-	
 		gameContainer.add(buttonContainer, BorderLayout.PAGE_START);
-
   }
 
   public void initBottomText() {
@@ -137,6 +136,8 @@ public class Game extends JFrame implements IGame {
       player1.resestAllUnits();
       activePlayer = player1;
     }
+    
+    board.setAction(UnitAction.IDLE);
 
     if (!activePlayer.checkIfKingIsAlive()) {
       gameEnded(getNotAcitvePlayer(), activePlayer);

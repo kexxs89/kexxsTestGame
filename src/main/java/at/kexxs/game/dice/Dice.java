@@ -1,10 +1,12 @@
 package at.kexxs.game.dice;
 
+import at.kexxs.game.unit.impl.Unit;
 import at.kexxs.game.util.ImageBuilder;
 import javafx.util.Callback;
 
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.util.HashMap;
@@ -34,7 +36,7 @@ public class Dice {
 	private final ScheduledExecutorService scheduler =
 			Executors.newScheduledThreadPool(1);
 	
-	public Dice(final Callback callback, final long minAttack, final long minDefense , final Container container)  {
+	public Dice(final Callback callback, final Unit attackUnit, final Unit defenseUnit , final Container container)  {
 		
 		attackDice = new DiceDTO();
 		defenseDice = new DiceDTO();
@@ -49,13 +51,26 @@ public class Dice {
 		
 		setDiceImage(attackDice,1L);
 		setDiceImage(defenseDice,1L);
+		container.removeAll();
+		container.setLayout(new GridLayout(4 , 0));
+		final JLabel attackLabel = new JLabel(attackUnit.getIcon());
+		JLabel defenseLabel = new JLabel(defenseUnit.getIcon());
+		container.add(attackLabel);
+		attackDice.getLabel().setBorder(new EmptyBorder(0,45,0,45));
+		defenseDice.getLabel().setBorder(new EmptyBorder(0,45,0,45));
+		
 		container.add(attackDice.getLabel());
+		container.add(defenseLabel);
 		container.add(defenseDice.getLabel());
 		
 		final Runnable rollerRunnable = new Runnable() {
 			public void run() {
-				rollDice(attackDice , minAttack);
-				rollDice(defenseDice, minDefense);
+				if(attackUnit.getRangeAttack() == 0){
+					rollDice(attackDice , attackUnit.getAttack());
+				}else{
+					rollDice(attackDice , attackUnit.getRangeAttack());
+				}
+				rollDice(defenseDice, defenseUnit.getDefense());
 				container.revalidate();
 			}
 		};

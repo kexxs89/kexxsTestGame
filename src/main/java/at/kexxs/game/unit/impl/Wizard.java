@@ -57,7 +57,7 @@ public class Wizard extends Unit implements IWizard {
 				return null;
 			};
 		};
-		new Dice(shootCallback, rangeAttack , enemy.getDefense() ,getGameField().getBoard().getGame().getActionBar());
+		new Dice(shootCallback, this , enemy ,getGameField().getBoard().getGame().getActionBar());
 	}
 
 }
