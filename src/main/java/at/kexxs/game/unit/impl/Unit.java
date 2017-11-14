@@ -298,12 +298,12 @@ public class Unit extends JLabel implements IUnit {
 
   public void select() {
     String stats = new String();
-    stats += "Name: " + name + "\n";
-    stats += "Attack: " + attack + "\n";
-    stats += "Defense: " + defense + "\n";
-    stats += "Movement: " + movement + "\n";
+    stats += "Name: " + getName() + "\n";
+    stats += "Attack: " + getAttack() + "\n";
+    stats += "Defense: " + getDefense() + "\n";
+    stats += "Movement: " + getMovement() + "\n";
     if (range > 0) {
-      stats += "Range: " + range + "\n";
+      stats += "Range: " + getRangeAttack() + "\n";
     }
     if (rangeAttack > 0) {
       stats += "Range Attack: " + rangeAttack + "\n";
@@ -314,6 +314,11 @@ public class Unit extends JLabel implements IUnit {
     Game.setSideText(stats);
 
   }
+  
+  public void setImageByPath(String path){
+		final BufferedImage bImage = ImageBuilder.getBufferdImageFromPath(path);
+		setShownImageIcon(ImageBuilder.scaleBufferdImage(bImage, 50, 50));
+	}
 
   private void setShownImageIcon(Image scaledImage) {
     setIcon(new ImageIcon(scaledImage));
@@ -376,19 +381,17 @@ public class Unit extends JLabel implements IUnit {
   	timer.schedule(tt, 1000);
 	}
 	
-	public void openActionMenu(){
+	public Container openActionMenu(){
   	Container container = getGameField().getBoard().getGame().getActionBar();
   	container.removeAll();
-		container.setLayout(new GridLayout(2 , 0));
+		container.setLayout(new GridLayout(4 , 0));
 		final JButton attackButton = new JButton("Attack");
-		
 		attackButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				gameField.getBoard().setAction(UnitAction.ATTACK);
 			}
 		});
-		
 		final JButton moveButton = new JButton("Move");
 		moveButton.addActionListener(new ActionListener() {
 			@Override
@@ -398,6 +401,8 @@ public class Unit extends JLabel implements IUnit {
 		});
 		container.add(attackButton);
 		container.add(moveButton);
+		container.repaint();
+		return container;
 	}
 
 }

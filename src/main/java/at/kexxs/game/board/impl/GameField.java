@@ -85,7 +85,7 @@ public class GameField extends JPanel implements IGameField {
 
     board.clearBackgroundColor();
 
-    if (board.selectedUnit == null) {
+    if (board.getAction().equals(UnitAction.IDLE)) {
       selectUnit();
     } else {
     	if(board.getAction().equals(UnitAction.MOVE)){
