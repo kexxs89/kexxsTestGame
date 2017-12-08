@@ -136,7 +136,6 @@ public class GameField extends JPanel implements IGameField {
     }
     log.info("Diese Einheit gehört " + unit.getPlayer().getName());
     return false;
-
   }
 
   public void removeUnit() {
@@ -181,34 +180,33 @@ public class GameField extends JPanel implements IGameField {
   	Callback callback = new Callback() {
 			@Override
 			public Object call(Object param) {
-				boolean result = (Boolean) param;
-				if (result) {
-					board.setSelectedUnit(null);
-					board.getGame().changeActivePlayer();
-				} else {
-					Game.setText("Dieser Zug ist nicht erlaubt!");
-				}
-				return null;
-			}
-		};
-		unit.attack(this, callback);
-
+		boolean result = (Boolean) param;
+		if (result) {
+		board.setSelectedUnit(null);
+			board.getGame().changeActivePlayer();
+		} else {
+			Game.setText("Dieser Zug ist nicht erlaubt!");
+		}
+		return null;
+		}
+	};
+	unit.attack(this, callback);
   }
 
   public void shootUnit(IRange unit) {
   	Callback callback = new Callback() {
 			@Override
 			public Object call(Object param) {
-				boolean result = (Boolean) param;
-				if (result) {
-					board.setSelectedUnit(null);
-					removeUnit();
-				}
-				board.getGame().changeActivePlayer();
-				return null;
-			}
-		};
-		unit.shoot(getUnit() , callback);
+		boolean result = (Boolean) param;
+		if (result) {
+			board.setSelectedUnit(null);
+			removeUnit();
+		}
+		board.getGame().changeActivePlayer();
+		return null;
+		}
+	};
+	unit.shoot(getUnit() , callback);
   }
 
   public DataFlavor[] getTransferDataFlavors() {

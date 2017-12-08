@@ -17,39 +17,34 @@ import java.awt.image.BufferedImage;
 
 public class Soldier extends Unit implements ISoldier {
 
-  private static final long serialVersionUID = 8783712320733914134L;
+	private static final long serialVersionUID = 8783712320733914134L;
 
-  public static final String RED = "resources/soldier_red.png";
-  public static final String BLUE = "resources/soldier_blue.png";
+	public static final String RED = "resources/soldier_red.png";
+	public static final String BLUE = "resources/soldier_blue.png";
 	public static final String SHIELD_RED = "resources/shield_red.png";
 	public static final String SHIELD_BLUE = "resources/shield_blue.png";
 	
-
-  private final int defense = 2;
-  private final int attack = 1;
-  private final int movement = 5;
+	private final int defense = 2;
+	private final int attack = 1;
+	private final int movement = 5;
 	
-  
-  
-  
-  private final int defenseDefense = 1;
+  	private final int defenseDefense = 1;
 	private final int defenseAttack = 4;
 	private final int defenseMovement = 2;
 	
-  private ModeEnum mode = ModeEnum.attack;
+  	private ModeEnum mode = ModeEnum.attack;
   
-  private enum ModeEnum{
-  	attack,
+  	private enum ModeEnum{
+  		attack,
 		defense
 	}
 
-  public Soldier(Player player, String imagePath) {
-    super(player, imagePath);
-    setDefense(defense);
-    setAttack(attack);
-    setMovement(movement);
-
-  }
+	public Soldier(Player player, String imagePath) {
+		super(player, imagePath);
+		setDefense(defense);
+		setAttack(attack);
+		setMovement(movement);
+	}
 	
   @Override
 	public Container openActionMenu(){
@@ -59,21 +54,19 @@ public class Soldier extends Unit implements ISoldier {
 		modeButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(mode.equals(ModeEnum.attack)){
-					setImageByPath(getShieldPath());
-					mode = ModeEnum.defense;
-				}else{
-					setImageByPath(getNormalPath());
-					mode = ModeEnum.attack;
-				}
-				getGameField().getBoard().checkAvailableFields(getGameField(), unit);
-				select();
+			if(mode.equals(ModeEnum.attack)){
+				setImageByPath(getShieldPath());
+				mode = ModeEnum.defense;
+			}else{
+				setImageByPath(getNormalPath());
+				mode = ModeEnum.attack;
+			}
 			}
 		});
+		setHasMoved(true);
 		container.add(modeButton);
 		return container;
 	}
-	
 	
 	private String getShieldPath(){
 		if(getPlayer().getId() == 1){
@@ -116,5 +109,4 @@ public class Soldier extends Unit implements ISoldier {
 			return defenseMovement;
 		}
 	}
-	
 }
