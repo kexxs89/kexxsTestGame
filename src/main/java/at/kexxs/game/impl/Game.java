@@ -138,6 +138,7 @@ public class Game extends JFrame implements IGame {
     }
     
     board.setAction(UnitAction.IDLE);
+    
 
     if (!activePlayer.checkIfKingIsAlive()) {
       gameEnded(getNotAcitvePlayer(), activePlayer);

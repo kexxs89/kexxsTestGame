@@ -14,5 +14,8 @@ public class TextConstant {
 
   public static final String RED_PLAYER = "Roter Spieler";
   public static final String BLUE_PLAYER = "Blauer Spieler";
+  
+  public static final String MODE_DEFENSE = "Defense";
+  public static final String MODE_SHOOT = "Shoot";
 
 }

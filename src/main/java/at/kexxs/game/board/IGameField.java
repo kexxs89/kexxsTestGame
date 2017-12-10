@@ -22,7 +22,9 @@ public interface IGameField extends MouseListener, Transferable {
   void selectUnit();
 
   void attackUnit(Unit unit);
-
-  void shootUnit(IRange unit);
+	
+	void changeActivePlayer();
+	
+	void shootUnit(IRange unit);
 	
 }

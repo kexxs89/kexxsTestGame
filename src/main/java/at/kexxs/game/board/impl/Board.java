@@ -89,6 +89,7 @@ public class Board extends JPanel implements IBoard {
     fields[row][column].removeUnit();
   }
 
+  @Override
   public void clearBackgroundColor() {
     for (int row = 0; row < Game.WIDTH; row++) {
       for (int column = 0; column < Game.HEIGHT; column++) {

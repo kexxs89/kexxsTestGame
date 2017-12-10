@@ -1,13 +1,20 @@
 package at.kexxs.game.unit.impl;
 
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.logging.Logger;
 
 import at.kexxs.game.board.impl.Player;
+import at.kexxs.game.constant.TextConstant;
 import at.kexxs.game.dice.Dice;
 import at.kexxs.game.dice.DiceResultDTO;
 import at.kexxs.game.impl.Game;
 import at.kexxs.game.unit.IArcher;
+import at.kexxs.game.util.UnitAction;
 import javafx.util.Callback;
+
+import javax.swing.*;
 
 public class Archer extends Unit implements IArcher {
 
@@ -51,6 +58,7 @@ public class Archer extends Unit implements IArcher {
 				Game.setSideText(battleInfo);
 				if (diceResultDTO.isSuccess()) {
 					result = true;
+					
 					//enemy.getPlayer().getUnits().remove(enemy);
 				}
 				callback.call(result);
@@ -59,4 +67,18 @@ public class Archer extends Unit implements IArcher {
 		};
   	new Dice(shootCallback, this , enemy, getGameField().getBoard().getGame().getActionBar());
   }
+	
+	@Override
+	public Container openActionMenu(){
+		Container container = super.openActionMenu();
+		final JButton modeButton = new JButton(TextConstant.MODE_SHOOT);
+		modeButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				getGameField().getBoard().setAction(UnitAction.SHOOT);
+			}
+		});
+		container.add(modeButton);
+		return container;
+	}
 }

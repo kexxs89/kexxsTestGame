@@ -1,6 +1,7 @@
 package at.kexxs.game.unit.impl;
 
 import at.kexxs.game.board.impl.Player;
+import at.kexxs.game.constant.TextConstant;
 import at.kexxs.game.unit.ISoldier;
 import at.kexxs.game.util.ImageBuilder;
 import at.kexxs.game.util.UnitAction;
@@ -46,24 +47,24 @@ public class Soldier extends Unit implements ISoldier {
 		setMovement(movement);
 	}
 	
-  @Override
+	@Override
 	public Container openActionMenu(){
-  	Container container = super.openActionMenu();
-		final JButton modeButton = new JButton("Mode");
-		final Unit unit = this;
+  		Container container = super.openActionMenu();
+		final JButton modeButton = new JButton(TextConstant.MODE_DEFENSE);
 		modeButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-			if(mode.equals(ModeEnum.attack)){
-				setImageByPath(getShieldPath());
-				mode = ModeEnum.defense;
-			}else{
-				setImageByPath(getNormalPath());
-				mode = ModeEnum.attack;
-			}
+				if(mode.equals(ModeEnum.attack)){
+					setImageByPath(getShieldPath());
+					mode = ModeEnum.defense;
+				}else{
+					setImageByPath(getNormalPath());
+					mode = ModeEnum.attack;
+				}
+				getGameField().getBoard().clearBackgroundColor();
+				setHasMoved(true);
 			}
 		});
-		setHasMoved(true);
 		container.add(modeButton);
 		return container;
 	}

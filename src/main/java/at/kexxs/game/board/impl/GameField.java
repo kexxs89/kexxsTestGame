@@ -80,41 +80,27 @@ public class GameField extends JPanel implements IGameField {
   };
 
   public void mouseClicked(MouseEvent e) {
-
     log.info(String.valueOf(e.getButton()));
-
     board.clearBackgroundColor();
-
-    if (board.getAction().equals(UnitAction.IDLE)) {
-      selectUnit();
-    } else {
-    	if(board.getAction().equals(UnitAction.MOVE)){
-				moveUnit(board.selectedUnit);
-			}else if(board.getAction().equals(UnitAction.ATTACK)){
-				if (board.selectedUnit.getRange() == 0) {
-					attackUnit(board.selectedUnit);
-				} else {
-					shootUnit((IRange) board.selectedUnit);
-				}
-			}
-    }
+    if (board.getAction().equals(UnitAction.IDLE) || board.getSelectedUnit() == null) {
+		selectUnit();
+		board.setAction(UnitAction.MOVE);
+	}else if(board.getAction().equals(UnitAction.SHOOT)){
+		shootUnit((IRange) board.selectedUnit);
+	}else if(board.getAction().equals(UnitAction.ATTACK)){
+		attackUnit(board.selectedUnit);
+	}else if(board.getAction().equals(UnitAction.MOVE)){
+		moveUnit(board.selectedUnit);
+	}
   }
 
-  public void mousePressed(MouseEvent e) {
-
-  }
+  public void mousePressed(MouseEvent e) { }
 	
-  public void mouseReleased(MouseEvent e) {
+  public void mouseReleased(MouseEvent e) {}
 
-  }
+  public void mouseEntered(MouseEvent e) {}
 
-  public void mouseEntered(MouseEvent e) {
-
-  }
-
-  public void mouseExited(MouseEvent e) {
-
-  }
+  public void mouseExited(MouseEvent e) {}
 
   public void setAndPaintUnit(Unit unit) {
     add(unit);
@@ -170,7 +156,7 @@ public class GameField extends JPanel implements IGameField {
   public void moveUnit(Unit unit) {
     if (unit.move(this)) {
       board.setSelectedUnit(null);
-      board.getGame().changeActivePlayer();
+      changeActivePlayer();
     } else {
       Game.setText("Dieser Zug ist nicht erlaubt!");
     }
@@ -183,7 +169,7 @@ public class GameField extends JPanel implements IGameField {
 		boolean result = (Boolean) param;
 		if (result) {
 		board.setSelectedUnit(null);
-			board.getGame().changeActivePlayer();
+		changeActivePlayer();
 		} else {
 			Game.setText("Dieser Zug ist nicht erlaubt!");
 		}
@@ -191,6 +177,11 @@ public class GameField extends JPanel implements IGameField {
 		}
 	};
 	unit.attack(this, callback);
+  }
+  
+  @Override
+  public void changeActivePlayer(){
+	  board.getGame().changeActivePlayer();
   }
 
   public void shootUnit(IRange unit) {
@@ -200,7 +191,14 @@ public class GameField extends JPanel implements IGameField {
 		boolean result = (Boolean) param;
 		if (result) {
 			board.setSelectedUnit(null);
-			removeUnit();
+			Callback dieCallback = new Callback() {
+				@Override
+				public Object call(Object param) {
+					removeUnit();
+					return null;
+				}
+			};
+			getUnit().die(dieCallback);
 		}
 		board.getGame().changeActivePlayer();
 		return null;
