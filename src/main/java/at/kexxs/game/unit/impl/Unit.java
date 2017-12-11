@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Logger;
@@ -146,6 +147,8 @@ public class Unit extends JLabel implements IUnit {
   public String toString() {
     return "Unit [attack=" + attack + ", defense=" + defense + ", movement=" + movement + ", wounds=" + wounds + ", toString()=" + super.toString() + "]";
   }
+	
+  
 
   public boolean checkIfMovementIsValid(GameField newField) {
 
@@ -404,5 +407,9 @@ public class Unit extends JLabel implements IUnit {
 		container.repaint();
 		return container;
 	}
+	
+	public void special(ArrayList<GameField> fields){
+		log.info("No special method exist");
+	};
 
 }

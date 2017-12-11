@@ -85,7 +85,7 @@ public class GameField extends JPanel implements IGameField {
     if (board.getAction().equals(UnitAction.IDLE) || board.getSelectedUnit() == null) {
 		selectUnit();
 		board.setAction(UnitAction.MOVE);
-	}else if(board.getAction().equals(UnitAction.SHOOT)){
+	}else if(board.getAction().equals(UnitAction.SPECIAL)){
 		shootUnit((IRange) board.selectedUnit);
 	}else if(board.getAction().equals(UnitAction.ATTACK)){
 		attackUnit(board.selectedUnit);

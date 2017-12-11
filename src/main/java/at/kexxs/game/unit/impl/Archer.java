@@ -3,8 +3,11 @@ package at.kexxs.game.unit.impl;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
+import at.kexxs.game.board.impl.GameField;
 import at.kexxs.game.board.impl.Player;
 import at.kexxs.game.constant.TextConstant;
 import at.kexxs.game.dice.Dice;
@@ -75,10 +78,36 @@ public class Archer extends Unit implements IArcher {
 		modeButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				getGameField().getBoard().setAction(UnitAction.SHOOT);
+				getGameField().getBoard().setAction(UnitAction.SPECIAL);
 			}
 		});
 		container.add(modeButton);
 		return container;
+	}
+	
+	@Override
+	public void special(final ArrayList<GameField> fields){
+		for(final GameField targetGameField : fields){
+			Callback callback = new Callback() {
+				@Override
+				public Object call(Object param) {
+					boolean result = (Boolean) param;
+					if (result) {
+						getGameField().getBoard().setSelectedUnit(null);
+						Callback dieCallback = new Callback() {
+							@Override
+							public Object call(Object param) {
+								targetGameField.removeUnit();
+								return null;
+							}
+						};
+						targetGameField.getUnit().die(dieCallback);
+					}
+					getGameField().getBoard().getGame().changeActivePlayer();
+					return null;
+				}
+			};
+			shoot(targetGameField.getUnit() , callback);
+		}
 	}
 }

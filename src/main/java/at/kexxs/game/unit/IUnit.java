@@ -33,5 +33,6 @@ public interface IUnit {
 	boolean isJump();
 
   void setJump(boolean jump);
+	
 
 }
