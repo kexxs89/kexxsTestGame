@@ -49,7 +49,7 @@ public class MainWindow {
     final Component verticalStrut_1 = Box.createVerticalStrut(20);
     verticalBox.add(verticalStrut_1);
 
-    final JLabel gameTitle = new JLabel("Willkommen bei N\u00F6dtastisch");
+    final JLabel gameTitle = new JLabel("Welcome to my strategy game!");
     gameTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
     verticalBox.add(gameTitle);
     gameTitle.setFont(new Font("Tahoma", Font.PLAIN, 18));

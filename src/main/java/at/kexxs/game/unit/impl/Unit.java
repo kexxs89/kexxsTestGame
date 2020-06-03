@@ -21,7 +21,6 @@ import at.kexxs.game.unit.IUnit;
 import at.kexxs.game.util.ImageBuilder;
 import at.kexxs.game.util.UnitAction;
 import javafx.util.Callback;
-import sun.plugin2.jvm.RemoteJVMLauncher;
 
 /**
  * @author Markus
